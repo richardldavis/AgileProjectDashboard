@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+               your project dashboard
+            </p>
+        </div>
+    </section>
+}
+<h3>project details</h3>
+<div id="estimates">
+@{ Html.RenderAction("ShowEstimates"); }
+</div>
+
+
+<h2>Filter By Tag</h2>
+
+@using (Html.BeginForm("ShowEstimates", "Home", FormMethod.Post, new { id = "form-tag-filter" }))
+{
+    @Html.DropDownList("tags", Model.Tags as SelectList)
+    <input type="submit" value="Go" />
+}
+
+@using (Html.BeginForm("SaveActual", "Home"))
+{
+    <strong>Add Actual Time</strong>
+    <input type="text" name="storyID" />
+    <input type="text" name="Actual" />
+    <input type="submit" value="Go" />
+}
+
+
+<h2>Add time to stories being worked on</h2>
+<table>
+    <tr>
+            <td>Text</td>
+            <td>Estimate</td>
+            <td>Actual</td>
+            <td><strong>Add Actual Time</strong> (hours)
+            </td>
+    </tr>
+    
+    @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
+    {
+        <tr>
+            <td><a href="http://@story.Link">@story.Text</a></td>
+            <td>@story.Estimate</td>
+            <td>@story.Actual</td>
+            <td>
+            @using (Html.BeginForm("SaveActual", "Home"))
+            {
+                <input type="hidden" name="storyID" />
+                <input type="text" name="Actual" size="10" />
+                <input type="submit" value="Go" />
+            }
+            </td>
+
+        </tr>
+    }
+</table>
+
+
+<h2>recently added stories</h2>
+<table>
+    <tr>
+            <td>ID</td>
+            <td>Text</td>
+            <td>Priority</td>
+            <td>Status</td>
+            <td>Estimate</td>
+            <td>Actual</td>
+        
+    </tr>
+    
+    @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
+    {
+        <tr>
+            <td>@story.ID</td>
+            <td><a href="http://@story.Link">@story.Text</a></td>
+            <td>@story.Priority</td>
+            <td>@story.Status</td>
+            <td>@story.Estimate</td>
+            <td>@story.Actual</td>
+        </tr>
+    }
+</table>
+
+<p>snapshot stories</p>
+
+<p>convert to codebase (On completion?)</p>
+
+<p>log actual days</p>
+
+<p>switch between days an hours?</p>
+
+<p>stories that have been worked on for too long</p>
+
+<p>stories that have been in the working column with no progress</p>
+
+<p>stories changed by client</p>
+
+<p>estimated project completion date</p>
+
+<p>Add front end dev time to esimates - how?</p>
+
+<p>people in project</p>
+
+<p>Link to successful acceptance test?</p>
+
+
+@section scripts {
+    
+ <script>
+     $(function () {
+        
+         $('#form-tag-filter').submit(function () {
+
+             var dataString = 'tagFilter=' + $("#tags").val()
+
+             $.ajax({
+                 url: this.action,
+                 type: this.method,
+                 data: dataString,
+                 success: function (result) {
+
+                     $('#estimates').html(result);
+                 }
+             });
+             return false;
+         });
+     });
+
+    </script>
+    
+}

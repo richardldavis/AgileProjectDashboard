@@ -1,0 +1,8 @@
+﻿<h5>Current Total Estimate in Days</h5>
+       
+<h2>@Model.TotalEstimate</h2>
+
+@foreach (var priority in Model.EstimateByPriority)
+{
+    <p>Phase @priority.Key:  <strong>@priority.Value days</strong></p>
+}
