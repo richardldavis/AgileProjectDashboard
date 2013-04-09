@@ -18,7 +18,7 @@ namespace ProjectDashboard.Controllers
 
             var fileLoc = HostingEnvironment.MapPath("/");
 
-            _service = new StoryService(53698, "fda90b3f792f412e9a9b3139f9867ded", fileLoc);
+            _service = new StoryService(53698, "xxx", fileLoc);
         }
 
         public ActionResult Index()
