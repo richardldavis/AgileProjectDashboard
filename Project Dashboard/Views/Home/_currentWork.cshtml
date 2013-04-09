@@ -1,0 +1,30 @@
+﻿
+<table>
+    <tr>
+            <td>Text</td>
+            <td>Estimate</td>
+            <td>Actual</td>
+            <td><strong>Add Actual Time</strong> (hours)
+            </td>
+    </tr>
+    
+    @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
+    {
+        var actualId = "actual" + story.ID;
+        
+        <tr>
+            <td><a href="http://@story.Link">@story.Text</a></td>
+            <td>@story.Estimate</td>
+            <td><span id="@actualId">@story.Actual</span></td>
+            <td>
+            @using (Html.BeginForm("SaveActual", "Home", FormMethod.Post, new { @class = "post-actual" }))
+            {
+                <input type="hidden" name="storyID" value="@story.ID" />
+                <input type="text" name="Actual" size="10" />
+                <input type="submit" value="Go" />
+            }
+            </td>
+
+        </tr>
+    }
+</table>

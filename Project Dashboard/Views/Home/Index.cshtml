@@ -28,44 +28,10 @@
     <input type="submit" value="Go" />
 }
 
-@using (Html.BeginForm("SaveActual", "Home"))
-{
-    <strong>Add Actual Time</strong>
-    <input type="text" name="storyID" />
-    <input type="text" name="Actual" />
-    <input type="submit" value="Go" />
-}
-
-
 <h2>Add time to stories being worked on</h2>
-<table>
-    <tr>
-            <td>Text</td>
-            <td>Estimate</td>
-            <td>Actual</td>
-            <td><strong>Add Actual Time</strong> (hours)
-            </td>
-    </tr>
-    
-    @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
-    {
-        <tr>
-            <td><a href="http://@story.Link">@story.Text</a></td>
-            <td>@story.Estimate</td>
-            <td>@story.Actual</td>
-            <td>
-            @using (Html.BeginForm("SaveActual", "Home"))
-            {
-                <input type="hidden" name="storyID" value="@story.ID" />
-                <input type="text" name="Actual" size="10" />
-                <input type="submit" value="Go" />
-            }
-            </td>
-
-        </tr>
-    }
-</table>
-
+<div id="current-work">
+@{ Html.RenderAction("ShowCurrentWork"); }
+</div>
 
 <h2>recently added stories</h2>
 <table>
@@ -76,7 +42,6 @@
             <td>Status</td>
             <td>Estimate</td>
             <td>Actual</td>
-        
     </tr>
     
     @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
@@ -124,18 +89,41 @@
 
              var dataString = 'tagFilter=' + $("#tags").val()
 
-             $.ajax({
-                 url: this.action,
-                 type: this.method,
-                 data: dataString,
-                 success: function (result) {
+             PostAjax(this.action, this.method, dataString, '#estimates');
 
-                     $('#estimates').html(result);
-                 }
-             });
              return false;
          });
+
+         $('.post-actual').submit(function () {
+
+             var ID = $(this).find('input[name=storyID]').val();
+
+             var dataString = 'storyID=' + ID  + "&Actual=" + $(this).find('input[name=Actual]').val()
+                        
+             PostAjax(this.action, this.method, dataString, '#actual' + ID );
+
+             return false;
+         });
+
+         
+        
+
+
      });
+
+     function PostAjax(action, method, dataString, resultID) {
+
+         $.ajax({
+             url: action,
+             type: method,
+             data: dataString,
+             success: function (result) {
+
+                 $(resultID).html(result);
+                 //$('#estimates').html(result);
+             }
+         });
+     }
 
     </script>
     

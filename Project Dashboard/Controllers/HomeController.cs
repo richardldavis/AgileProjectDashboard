@@ -26,9 +26,8 @@ namespace ProjectDashboard.Controllers
         {
 
             var dashboardModel = new DashboardModel();
-
             dashboardModel.LatestStories = _service.GetStories().OrderByDescending(x => x.ID).Take(5).ToList();
-            
+
             var list = _service.GetTags()
                       .Select(x => new SelectListItem { Text = x, Value = x })
                       .ToList();
@@ -54,6 +53,14 @@ namespace ProjectDashboard.Controllers
             return PartialView("_estimates", dashboardModel);
         }
 
+        public ActionResult ShowCurrentWork()
+        {
+            var dashboardModel = new DashboardModel();
+            dashboardModel.LatestStories = _service.GetStories().OrderByDescending(x => x.ID).Take(5).ToList();
+
+            return PartialView("_currentWork", dashboardModel);
+        }
+
 
         public ActionResult TagFilter(FormCollection form)
         {
@@ -61,14 +68,16 @@ namespace ProjectDashboard.Controllers
             return RedirectToAction("Index", new { tagFilter = tag });
         }
 
-        public RedirectToRouteResult SaveActual(FormCollection form)
+        public ContentResult SaveActual(FormCollection form)
         {
             var storyID = int.Parse(form["storyID"].ToString());
             var actual = decimal.Parse(form["actual"].ToString());
 
-            _service.SaveActual(storyID, actual);
+            var c = new ContentResult();
 
-            return RedirectToAction("Index", "Home");
+            c.Content = _service.SaveActual(storyID, actual).ToString();
+            
+            return c;
         }
 
         public decimal GetEstimateForPriority(int priority)

@@ -83,7 +83,7 @@ namespace ProjectDashboard.Domain
         }
 
 
-        public void SaveActual(int storyID, decimal actual)
+        public decimal SaveActual(int storyID, decimal actual)
         {
             
             //get existing actual
@@ -99,9 +99,10 @@ namespace ProjectDashboard.Domain
             {
                 current.Annotations.Add("actual", actual.ToString());
             }
-                       
-
+          
             _actualRepo.Save(current);
+
+            return actual;
         }
 
         public List<string> GetTags()
