@@ -56,7 +56,7 @@
             <td>
             @using (Html.BeginForm("SaveActual", "Home"))
             {
-                <input type="hidden" name="storyID" />
+                <input type="hidden" name="storyID" value="@story.ID" />
                 <input type="text" name="Actual" size="10" />
                 <input type="submit" value="Go" />
             }
