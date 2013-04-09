@@ -2,6 +2,7 @@
 using ProjectDashboard.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Hosting;
@@ -18,7 +19,7 @@ namespace ProjectDashboard.Controllers
 
             var fileLoc = HostingEnvironment.MapPath("/");
 
-            _service = new StoryService(53698, "xxx", fileLoc);
+            _service = new StoryService(int.Parse(ConfigurationManager.ConnectionStrings["AgileProjectID"].ConnectionString), ConfigurationManager.ConnectionStrings["AgileKey"].ConnectionString, fileLoc);
         }
 
         public ActionResult Index()

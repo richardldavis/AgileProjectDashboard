@@ -229,6 +229,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="connectionStrings.config" />
     <None Include="Properties\PublishProfiles\projectdashboard - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\projectdashboard - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.7.1.intellisense.js" />
