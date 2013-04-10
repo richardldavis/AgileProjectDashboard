@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace ProjectDashboard.Domain
 {
-    public class StoryAnnotationRepository : IStoryAnnotationRepository
+    public class StoryAnnotationRepository : BaseTextfileRepository, IStoryAnnotationRepository
     {
         private int _projectID;
-        private string _fileRoot;
-
-        public StoryAnnotationRepository(int projectID, string fileRoot)
+    
+        public StoryAnnotationRepository(int projectID, string fileRoot) : base(fileRoot)
         {
             _projectID = projectID;
-            _fileRoot = fileRoot;
         }
 
         public void Save(StoryAnnotation storyAnnotation)

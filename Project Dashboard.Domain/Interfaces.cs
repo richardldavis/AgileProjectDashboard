@@ -10,9 +10,21 @@
         List<string> GetTags();
     }
 
+    public interface ICommentRepository
+    {
+        void Add(int storyID, string text);
+    }
+
     public interface IStoryAnnotationRepository
     {
         void Save(StoryAnnotation storyAnnotation);
         StoryAnnotation Get(int storyID);
+    }
+
+    public interface IStoryCache
+    {
+        IList<Story> GetStories();
+        IList<Story> AddStories(IList<Story> story);
+        void ClearCache();
     }
 }

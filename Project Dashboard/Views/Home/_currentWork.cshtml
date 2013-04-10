@@ -8,14 +8,14 @@
             </td>
     </tr>
     
-    @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
+    @foreach (ProjectDashboard.Domain.Story story in Model.StoriesBeingWorkedOn)
     {
         var actualId = "actual" + story.ID;
         
         <tr>
             <td><a href="http://@story.Link">@story.Text</a></td>
             <td>@story.Estimate</td>
-            <td><span id="@actualId">@story.Actual</span></td>
+            <td><span id="@actualId">@Math.Round(story.Actual, 2)</span></td>
             <td>
             @using (Html.BeginForm("SaveActual", "Home", FormMethod.Post, new { @class = "post-actual" }))
             {

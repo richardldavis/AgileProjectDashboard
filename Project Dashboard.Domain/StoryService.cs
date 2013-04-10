@@ -8,20 +8,23 @@ namespace ProjectDashboard.Domain
 {
     public class StoryService
     {
-        private IStoryRepository _storyRepo;
-        private IStoryAnnotationRepository _actualRepo;
+        private readonly IStoryRepository _storyRepo;
+        private readonly IStoryAnnotationRepository _actualRepo;
+        private readonly ICommentRepository _commentRepo;
+        private readonly SnapshotRepository _snapshotRepo;
         private readonly IStoryCache _cache;
 
         public StoryService(int projectID, string apiKey, string fileRoot)
         {
             _storyRepo = new AgileZenModel(projectID, apiKey);
             _actualRepo = new StoryAnnotationRepository(projectID, fileRoot);
+            _commentRepo = new AgileZenCommentRepository(projectID, apiKey);
             _cache = new StoryCache();
+            _snapshotRepo = new SnapshotRepository(fileRoot);
         }
 
         public List<string> GetPrioritiesForProject()
         { 
-        
             var priorities = new HashSet<string>();
             
             foreach (Story story in  GetStories())
@@ -33,12 +36,19 @@ namespace ProjectDashboard.Domain
         
         }
 
+        public void TakeSnapshot(Snapshot snapshot)
+        {
+            _snapshotRepo.Save(snapshot);
+        }
+
         public List<Story> GetStories()
         {
             var stories = _cache.GetStories() == null ?
                           _cache.AddStories(_storyRepo.GetStories()) : // the add method returns the stories
                           _cache.GetStories();
-      
+
+            var annotatedStories = new List<Story>();
+            
             foreach (var story in stories)
             {
                 
@@ -47,13 +57,14 @@ namespace ProjectDashboard.Domain
                 
                 if (annotations.ContainsKey("actual"))
                 {
-                     story.Actual = decimal.Parse(annotations["actual"]);
+                     story.Actual = decimal.Parse(annotations["actual"]) / 7;
                 }
 
-               
+                annotatedStories.Add(story);
+
             }
 
-            return stories.ToList();
+            return annotatedStories.ToList();
         }
 
 
@@ -85,6 +96,8 @@ namespace ProjectDashboard.Domain
 
         public decimal SaveActual(int storyID, decimal actual)
         {
+           
+            decimal newActual = (decimal)0;
             
             //get existing actual
             var current = _actualRepo.Get(storyID);
@@ -92,17 +105,20 @@ namespace ProjectDashboard.Domain
             //update value
             if (current.Annotations.ContainsKey("actual"))
             {
-                actual += decimal.Parse(current.Annotations["actual"]);
-                current.Annotations["actual"] = actual.ToString();
+                newActual = decimal.Parse(current.Annotations["actual"]) + actual;
+                current.Annotations["actual"] =  newActual.ToString();
             }
             else
             {
-                current.Annotations.Add("actual", actual.ToString());
+                 newActual = actual;
+                 current.Annotations.Add("actual", newActual.ToString());
             }
-          
+       
             _actualRepo.Save(current);
 
-            return actual;
+            _commentRepo.Add(storyID, "Added time: " + actual.ToString() + ". Total time spent on this story is now " + newActual.ToString());
+
+            return newActual;
         }
 
         public List<string> GetTags()

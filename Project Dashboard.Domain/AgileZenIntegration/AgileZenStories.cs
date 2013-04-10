@@ -20,13 +20,6 @@ namespace ProjectDashboard.Domain
             _apiKey = apiKey;
         }
 
-        //public List<string PeopleInProject()
-        //{
-
-
-
-        //}
-
         public void SwapTag(string currentTag, string newTag)
         {
 
@@ -49,7 +42,7 @@ namespace ProjectDashboard.Domain
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    //delete the tag from the story
+                    
                     var addRequest = (HttpWebRequest)WebRequest.Create("https://agilezen.com/api/v1/projects/" + _projectID.ToString() + "/tags/" + newTag + "/stories/?apikey=" + _apiKey);
                     addRequest.ContentType = "application/x-www-form-urlencoded";
                     

@@ -38,6 +38,25 @@ namespace ProjectDashboard.Controllers
            
         }
 
+        public ActionResult TakeSnapshot()
+        {
+
+            var stories = _service.GetStories();
+
+            var snapshot = new Snapshot { 
+                Date = DateTime.Now, 
+                TotalNumberOfStories = stories.Count(),  
+                StoriesBeingWorkedOn = stories.Where(x => x.Status == "Working").Count(), 
+                TotalEstimate = stories.Sum(x => x.Estimate),
+                StoriesCompleted = stories.Where(x => x.Status == "Completed").Count(),
+                TotalTimeSpent = stories.Sum(x => x.Actual), 
+            };
+
+            _service.TakeSnapshot(snapshot);
+
+            return RedirectToAction("Index", new { tagFilter = "" });
+        }
+
         public ActionResult ShowEstimates(string tagFilter = "")
         {
             var dashboardModel = new DashboardModel();
@@ -56,7 +75,7 @@ namespace ProjectDashboard.Controllers
         public ActionResult ShowCurrentWork()
         {
             var dashboardModel = new DashboardModel();
-            dashboardModel.LatestStories = _service.GetStories().OrderByDescending(x => x.ID).Take(5).ToList();
+            dashboardModel.StoriesBeingWorkedOn = _service.GetStories().Where(x => x.Status == "Working").ToList();
 
             return PartialView("_currentWork", dashboardModel);
         }
@@ -75,7 +94,7 @@ namespace ProjectDashboard.Controllers
 
             var c = new ContentResult();
 
-            c.Content = _service.SaveActual(storyID, actual).ToString();
+            c.Content = Math.Round(_service.SaveActual(storyID, actual) / 7, 2).ToString();
             
             return c;
         }
@@ -83,20 +102,6 @@ namespace ProjectDashboard.Controllers
         public decimal GetEstimateForPriority(int priority)
         {
             return _service.GetTotalEstimateForProject(priority);
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your app description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
     }
 }

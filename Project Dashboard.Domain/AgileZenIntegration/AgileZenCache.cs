@@ -4,16 +4,6 @@
     using System.Collections.Generic;
     using System.Runtime.Caching;
 
-    public interface IStoryCache
-    {
-        IList<Story> GetStories();
-        IList<Story> AddStories(IList<Story> story);
-        void ClearCache();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     public class StoryCache : IStoryCache
     {
         private ObjectCache _cache;
@@ -30,7 +20,7 @@
 
         public IList<Story> AddStories(IList<Story> stories)
         {
-            var policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.AddHours(0.05) };
+            var policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.AddHours(0.01) };
 
             _cache.Set("Stories", stories, policy);
 

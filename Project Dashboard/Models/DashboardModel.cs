@@ -17,6 +17,8 @@ namespace ProjectDashboard.Models
         // ref to a domain model - consider changing
         public List<Story> LatestStories { get; set; }
 
+        public List<Story> StoriesBeingWorkedOn { get; set; }
+
         public SelectList Tags { get; set; }
 
 

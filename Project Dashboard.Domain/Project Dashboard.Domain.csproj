@@ -40,11 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActualRepository.cs" />
+    <Compile Include="TextfileRepositories\ActualRepository.cs" />
+    <Compile Include="AgileZenIntegration\AgileZenBase.cs" />
     <Compile Include="AgileZenIntegration\AgileZenCache.cs" />
-    <Compile Include="AgileZenIntegration\AgileZenRepository.cs" />
+    <Compile Include="AgileZenIntegration\AgileZenStories.cs" />
+    <Compile Include="AgileZenIntegration\AgileZenComments.cs" />
+    <Compile Include="TextfileRepositories\BaseTextfileRepository.cs" />
+    <Compile Include="TextfileRepositories\SnapshotRepository.cs" />
     <Compile Include="StoryAnnotation.cs" />
-    <Compile Include="IStoryRepository.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="Story.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoryService.cs" />
