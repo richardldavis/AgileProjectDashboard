@@ -33,35 +33,24 @@
 @{ Html.RenderAction("ShowCurrentWork"); }
 </div>
 
-<h2>recently added stories</h2>
-<table>
-    <tr>
-            <td>ID</td>
-            <td>Text</td>
-            <td>Priority</td>
-            <td>Status</td>
-            <td>Estimate</td>
-            <td>Actual</td>
-    </tr>
-    
-    @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
-    {
-        <tr>
-            <td>@story.ID</td>
-            <td><a href="http://@story.Link">@story.Text</a></td>
-            <td>@story.Priority</td>
-            <td>@story.Status</td>
-            <td>@story.Estimate</td>
-            <td>@story.Actual</td>
-        </tr>
-    }
-</table>
+@using (Html.BeginForm("TakeSnapshot", "Home", FormMethod.Post))
+{
+    <input type="submit" value="Take Snapshot" />
+}
 
-<p>snapshot stories</p>
+<div id="recent-stories">
+@{ Html.RenderAction("ShowLatestStories"); }
+</div>
+
+
+<div id="recent-comments">
+@{ Html.RenderAction("ShowLatestComments"); }
+</div>
+
+
+<p>list recent comments</p>
 
 <p>convert to codebase (On completion?)</p>
-
-<p>log actual days</p>
 
 <p>switch between days an hours?</p>
 

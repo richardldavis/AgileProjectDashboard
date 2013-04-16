@@ -26,8 +26,7 @@ namespace ProjectDashboard.Controllers
         {
 
             var dashboardModel = new DashboardModel();
-            dashboardModel.LatestStories = _service.GetStories().OrderByDescending(x => x.ID).Take(5).ToList();
-
+           
             var list = _service.GetTags()
                       .Select(x => new SelectListItem { Text = x, Value = x })
                       .ToList();
@@ -72,7 +71,7 @@ namespace ProjectDashboard.Controllers
             return PartialView("_estimates", dashboardModel);
         }
 
-        public ActionResult ShowCurrentWork()
+        public PartialViewResult ShowCurrentWork()
         {
             var dashboardModel = new DashboardModel();
             dashboardModel.StoriesBeingWorkedOn = _service.GetStories().Where(x => x.Status == "Working").ToList();
@@ -80,6 +79,21 @@ namespace ProjectDashboard.Controllers
             return PartialView("_currentWork", dashboardModel);
         }
 
+        public PartialViewResult ShowLatestStories()
+        {
+            var dashboardModel = new DashboardModel();
+            dashboardModel.LatestStories = _service.GetStories().OrderByDescending(x => x.ID).Take(5).ToList();
+           
+            return PartialView("_latestStories", dashboardModel);
+        }
+
+        public PartialViewResult ShowLatestComments()
+        {
+            var dashboardModel = new DashboardModel();
+            dashboardModel.LatestComments = _service.GetComments().OrderByDescending(x => x.Date).Take(5).ToList();
+
+            return PartialView("_latestComments", dashboardModel);
+        }
 
         public ActionResult TagFilter(FormCollection form)
         {

@@ -13,6 +13,7 @@
     public interface ICommentRepository
     {
         void Add(int storyID, string text);
+        //void GetComments();
     }
 
     public interface IStoryAnnotationRepository

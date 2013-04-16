@@ -21,6 +21,6 @@ namespace ProjectDashboard.Models
 
         public SelectList Tags { get; set; }
 
-
+        public List<Comment> LatestComments { get; set; }
     }
 }

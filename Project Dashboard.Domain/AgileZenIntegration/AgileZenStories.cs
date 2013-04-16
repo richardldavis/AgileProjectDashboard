@@ -132,6 +132,18 @@ namespace ProjectDashboard.Domain
             foreach (XmlNode node in GetStoriesAsXML())
             {
 
+                var storyID = int.Parse(node.SelectSingleNode("id").InnerText.ToString());
+
+                var comments = new List<Comment>();
+                foreach (XmlNode comment in node.SelectSingleNode("comments").SelectNodes("comment"))
+                {
+                    comments.Add(new Comment { Who = comment.SelectSingleNode("author").SelectSingleNode("name").InnerText, 
+                                               Date = DateTime.Parse(comment.SelectSingleNode("createTime").InnerText),
+                                               Story = storyID,
+                                               Text = comment.SelectSingleNode("text").InnerText,
+                    });
+                }
+                
                 var tags = new List<string>();
                 foreach (XmlNode tag in node.SelectSingleNode("tags").SelectNodes("tag"))
                 {
@@ -146,9 +158,10 @@ namespace ProjectDashboard.Domain
                     Priority = int.Parse(node.SelectSingleNode("priority").InnerText.ToString()),
                     Text = node.SelectSingleNode("text").InnerText.ToString(),
                     Link = "agilezen.com/project/" + _projectID.ToString() + "/story/" + node.SelectSingleNode("id").InnerText.ToString(),
-                    ID = int.Parse(node.SelectSingleNode("id").InnerText.ToString()),
+                    ID = storyID,
                     Tags = tags,
-                    Status = node.SelectSingleNode("phase").SelectSingleNode("name").InnerText.ToString()
+                    Status = node.SelectSingleNode("phase").SelectSingleNode("name").InnerText.ToString(),
+                    Comments = comments
 
 
                 });

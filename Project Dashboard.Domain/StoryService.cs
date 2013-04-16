@@ -41,6 +41,11 @@ namespace ProjectDashboard.Domain
             _snapshotRepo.Save(snapshot);
         }
 
+        public List<Comment> GetComments()
+        {
+            return GetStories().SelectMany(x => x.Comments).ToList();
+        }
+
         public List<Story> GetStories()
         {
             var stories = _cache.GetStories() == null ?
@@ -116,7 +121,9 @@ namespace ProjectDashboard.Domain
        
             _actualRepo.Save(current);
 
-            _commentRepo.Add(storyID, "Added time: " + actual.ToString() + ". Total time spent on this story is now " + newActual.ToString());
+            // Do not make a comment when adding actual time to stpry - request from shelly 16.4.13
+            // TODO:  put back in as a configuration switch?
+            //_commentRepo.Add(storyID, "Added time: " + actual.ToString() + ". Total time spent on this story is now " + newActual.ToString());
 
             return newActual;
         }

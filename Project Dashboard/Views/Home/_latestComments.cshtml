@@ -1,0 +1,19 @@
+﻿<h2>recently added comments</h2>
+<table>
+    <tr>
+        <td>Story</td>    
+        <td>Text</td>
+        <td>Who</td>
+        <td>Date</td>
+    </tr>
+    
+    @foreach (ProjectDashboard.Domain.Comment comment in Model.LatestComments)
+    {
+        <tr>
+            <td>@comment.Story</td>
+            <td>@comment.Text</td>
+            <td>@comment.Who</td>
+            <td>@comment.Date</td>
+        </tr>
+    }
+</table>

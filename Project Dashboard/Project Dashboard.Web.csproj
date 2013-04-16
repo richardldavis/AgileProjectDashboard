@@ -288,6 +288,8 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Home\_estimates.cshtml" />
     <Content Include="Views\Home\_currentWork.cshtml" />
+    <Content Include="Views\Home\_latestStories.cshtml" />
+    <Content Include="Views\Home\_latestComments.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
