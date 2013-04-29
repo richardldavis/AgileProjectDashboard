@@ -14,6 +14,8 @@ namespace ProjectDashboard.Domain
 
         public decimal Actual { get; set; }
 
+        public DateTime TimeLastUpdated { get; set; }
+        
         public string Text { get; set; }
 
         public int Priority { get; set; }

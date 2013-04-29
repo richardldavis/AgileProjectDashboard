@@ -31,6 +31,8 @@ namespace ProjectDashboard.Controllers
                       .Select(x => new SelectListItem { Text = x, Value = x })
                       .ToList();
 
+            dashboardModel.TotalActual = Math.Round(_service.GetStories().Sum(x => x.Actual),2);
+
             dashboardModel.Tags = new SelectList(list, "Value", "Text", null); 
 
             return View(dashboardModel);
@@ -62,12 +64,21 @@ namespace ProjectDashboard.Controllers
             
             dashboardModel.TotalEstimate = _service.GetTotalEstimateForProject(0, tagFilter);
             dashboardModel.EstimateByPriority = new List<KeyValuePair<string, string>>();
+
+            dashboardModel.CompletenessByPriority = new List<Completeness>();
             
             foreach (var p in _service.GetPrioritiesForProject())
             {
                 dashboardModel.EstimateByPriority.Add(new KeyValuePair<string, string>(p, _service.GetTotalEstimateForProject(int.Parse(p), tagFilter).ToString()));
             }
-            
+
+            foreach (var p in _service.GetPrioritiesForProject())
+            {
+                dashboardModel.CompletenessByPriority.Add(new Completeness{ Label = p,  
+                                                                            Complete = Math.Round(_service.GetCompletenessForProject("Complete", int.Parse(p), tagFilter), 2), 
+                                                                            Working =  Math.Round(_service.GetCompletenessForProject("Working", int.Parse(p), tagFilter), 2) });
+            }
+
             return PartialView("_estimates", dashboardModel);
         }
 

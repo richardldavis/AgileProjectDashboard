@@ -14,6 +14,8 @@
         </div>
     </section>
 }
+<h3>Total Time spent on stories</h3>
+@Model.TotalActual
 <h3>project details</h3>
 <div id="estimates">
 @{ Html.RenderAction("ShowEstimates"); }
@@ -48,8 +50,6 @@
 </div>
 
 
-<p>list recent comments</p>
-
 <p>convert to codebase (On completion?)</p>
 
 <p>switch between days an hours?</p>
@@ -61,8 +61,6 @@
 <p>stories changed by client</p>
 
 <p>estimated project completion date</p>
-
-<p>Add front end dev time to esimates - how?</p>
 
 <p>people in project</p>
 
@@ -93,10 +91,6 @@
 
              return false;
          });
-
-         
-        
-
 
      });
 

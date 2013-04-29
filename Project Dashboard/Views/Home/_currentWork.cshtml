@@ -1,9 +1,10 @@
 ﻿
 <table>
     <tr>
-            <td>Text</td>
-            <td>Estimate</td>
-            <td>Actual</td>
+            <td><strong>Text</strong></td>
+            <td><strong>Estimate</strong></td>
+            <td><strong>Actual</strong></td>
+            <td><strong>Last Changed</strong></td>
             <td><strong>Add Actual Time</strong> (hours)
             </td>
     </tr>
@@ -16,6 +17,7 @@
             <td><a href="http://@story.Link">@story.Text</a></td>
             <td>@story.Estimate</td>
             <td><span id="@actualId">@Math.Round(story.Actual, 2)</span></td>
+            <td><span id="last-changed-@actualId">@story.TimeLastUpdated</span></td>
             <td>
             @using (Html.BeginForm("SaveActual", "Home", FormMethod.Post, new { @class = "post-actual" }))
             {

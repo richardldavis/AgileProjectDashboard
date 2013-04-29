@@ -4,5 +4,11 @@
 
 @foreach (var priority in Model.EstimateByPriority)
 {
-    <p>Phase @priority.Key:  <strong>@priority.Value days</strong></p>
+    <p>Phase @priority.Key:  <strong>@priority.Value days</strong> </p>
+}
+
+<h3>Completeness</h3>
+@foreach (var completeness in Model.CompletenessByPriority)
+{
+    <p>Phase @completeness.Label:  <strong>is @completeness.Complete<text>%</text> complete</strong>, and @completeness.Working<text>%</text> is currently being worked on</p>
 }

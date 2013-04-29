@@ -65,6 +65,11 @@ namespace ProjectDashboard.Domain
                      story.Actual = decimal.Parse(annotations["actual"]) / 7;
                 }
 
+                if (annotations.ContainsKey("last-changed"))
+                {
+                    story.TimeLastUpdated = DateTime.Parse(annotations["last-changed"]);
+                }
+
                 annotatedStories.Add(story);
 
             }
@@ -78,6 +83,15 @@ namespace ProjectDashboard.Domain
 
             return GetStories().Where(x => x.Priority == priority || priority == 0).Where(x => x.Tags.Contains(tag) || tag == "").Sum(x => x.Estimate);
             
+        }
+
+        public decimal GetCompletenessForProject(string phase, int priority = 0, string tag = "")
+        {
+            var actual = GetStories().Where(x => x.Priority == priority || priority == 0).Where(x => x.Tags.Contains(tag) || tag == "").Where(x => x.Status == phase).Sum(x => x.Estimate);
+            var estimate = GetTotalEstimateForProject(priority, tag);
+
+            return (actual/estimate) * 100;
+
         }
 
         public decimal GetTotalEstimateForStories(List<Story> stories)
@@ -118,6 +132,18 @@ namespace ProjectDashboard.Domain
                  newActual = actual;
                  current.Annotations.Add("actual", newActual.ToString());
             }
+
+
+            //update last changed
+            if (current.Annotations.ContainsKey("last-changed"))
+            {
+                current.Annotations["last-changed"] = DateTime.Now.ToString();
+            }
+            else
+            {
+                current.Annotations.Add("last-changed", DateTime.Now.ToString());
+            }
+
        
             _actualRepo.Save(current);
 
