@@ -49,7 +49,7 @@ namespace ProjectDashboard.Controllers
                 TotalNumberOfStories = stories.Count(),  
                 StoriesBeingWorkedOn = stories.Where(x => x.Status == "Working").Count(), 
                 TotalEstimate = stories.Sum(x => x.Estimate),
-                StoriesCompleted = stories.Where(x => x.Status == "Completed").Count(),
+                StoriesCompleted = stories.Where(x => x.Status == "Complete").Count(),
                 TotalTimeSpent = stories.Sum(x => x.Actual), 
             };
 
