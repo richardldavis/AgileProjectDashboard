@@ -118,7 +118,7 @@ namespace ProjectDashboard.Domain
 
             var agile_url = "https://agilezen.com/api/v1/projects/" + _projectID.ToString() + "/stories.xml?apikey=" + _apiKey;
 
-            agile_url += "&with=everything";
+            agile_url += "&with=everything&pageSize=1000";
 
             return GetAgileResponseAsXML(agile_url);
         

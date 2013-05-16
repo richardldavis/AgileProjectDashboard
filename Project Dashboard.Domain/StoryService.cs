@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectDashboard.Domain
+﻿namespace ProjectDashboard.Domain
 {
+    using ProjectDashboard.Domain.TimeZoneIntegration;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public class StoryService
     {
         private readonly IStoryRepository _storyRepo;
@@ -13,6 +14,7 @@ namespace ProjectDashboard.Domain
         private readonly ICommentRepository _commentRepo;
         private readonly SnapshotRepository _snapshotRepo;
         private readonly IStoryCache _cache;
+        private readonly ITimeZoneService _timezone;
 
         public StoryService(int projectID, string apiKey, string fileRoot)
         {
@@ -21,6 +23,8 @@ namespace ProjectDashboard.Domain
             _commentRepo = new AgileZenCommentRepository(projectID, apiKey);
             _cache = new StoryCache();
             _snapshotRepo = new SnapshotRepository(fileRoot);
+            _timezone = new TimeZoneService();
+
         }
 
         public List<string> GetPrioritiesForProject()
@@ -56,15 +60,12 @@ namespace ProjectDashboard.Domain
             
             foreach (var story in stories)
             {
-                
+
+                story.Actual = _timezone.TotalTimeForStory(story.ID) / 7;
+
                 // get annotations
                 var annotations = _actualRepo.Get(story.ID).Annotations;
-                
-                if (annotations.ContainsKey("actual"))
-                {
-                     story.Actual = decimal.Parse(annotations["actual"]) / 7;
-                }
-
+               
                 if (annotations.ContainsKey("last-changed"))
                 {
                     story.TimeLastUpdated = DateTime.Parse(annotations["last-changed"]);
@@ -147,7 +148,7 @@ namespace ProjectDashboard.Domain
        
             _actualRepo.Save(current);
 
-            // Do not make a comment when adding actual time to stpry - request from shelly 16.4.13
+            // Do not make a comment when adding actual time to story - request from shelly 16.4.13
             // TODO:  put back in as a configuration switch?
             //_commentRepo.Add(storyID, "Added time: " + actual.ToString() + ". Total time spent on this story is now " + newActual.ToString());
 
