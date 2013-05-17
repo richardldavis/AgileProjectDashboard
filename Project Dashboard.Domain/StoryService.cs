@@ -16,6 +16,8 @@
         private readonly IStoryCache _cache;
         private readonly ITimeZoneService _timezone;
 
+        private decimal _budget = (decimal)138.5;
+
         public StoryService(int projectID, string apiKey, string fileRoot)
         {
             _storyRepo = new AgileZenModel(projectID, apiKey);
@@ -113,47 +115,53 @@
             _storyRepo.SwapTag(currentTag, newTag);
         }
 
-
-        public decimal SaveActual(int storyID, decimal actual)
+        public decimal CompletedStoryAverageEstimateAccuracy()
         {
+            return GetStories().Where(x => x.Status == "Complete").Average(y => ((y.Actual - y.Estimate) / y.Estimate) * 100);
+            
+        }
+
+
+        //public decimal SaveActual(int storyID, decimal actual)
+        //{
            
-            decimal newActual = (decimal)0;
+        //    decimal newActual = (decimal)0;
             
-            //get existing actual
-            var current = _actualRepo.Get(storyID);
+        //    //get existing actual
+        //    var current = _actualRepo.Get(storyID);
             
-            //update value
-            if (current.Annotations.ContainsKey("actual"))
-            {
-                newActual = decimal.Parse(current.Annotations["actual"]) + actual;
-                current.Annotations["actual"] =  newActual.ToString();
-            }
-            else
-            {
-                 newActual = actual;
-                 current.Annotations.Add("actual", newActual.ToString());
-            }
+        //    //update value
+        //    if (current.Annotations.ContainsKey("actual"))
+        //    {
+        //        newActual = decimal.Parse(current.Annotations["actual"]) + actual;
+        //        current.Annotations["actual"] =  newActual.ToString();
+        //    }
+        //    else
+        //    {
+        //         newActual = actual;
+        //         current.Annotations.Add("actual", newActual.ToString());
+        //    }
 
 
-            //update last changed
-            if (current.Annotations.ContainsKey("last-changed"))
-            {
-                current.Annotations["last-changed"] = DateTime.Now.ToString();
-            }
-            else
-            {
-                current.Annotations.Add("last-changed", DateTime.Now.ToString());
-            }
+        //    //update last changed
+        //    if (current.Annotations.ContainsKey("last-changed"))
+        //    {
+        //        current.Annotations["last-changed"] = DateTime.Now.ToString();
+        //    }
+        //    else
+        //    {
+        //        current.Annotations.Add("last-changed", DateTime.Now.ToString());
+        //    }
 
        
-            _actualRepo.Save(current);
+        //    _actualRepo.Save(current);
 
-            // Do not make a comment when adding actual time to story - request from shelly 16.4.13
-            // TODO:  put back in as a configuration switch?
-            //_commentRepo.Add(storyID, "Added time: " + actual.ToString() + ". Total time spent on this story is now " + newActual.ToString());
+        //    // Do not make a comment when adding actual time to story - request from shelly 16.4.13
+        //    // TODO:  put back in as a configuration switch?
+        //    //_commentRepo.Add(storyID, "Added time: " + actual.ToString() + ". Total time spent on this story is now " + newActual.ToString());
 
-            return newActual;
-        }
+        //    return newActual;
+        //}
 
         public List<string> GetTags()
         {

@@ -1,4 +1,5 @@
 ﻿using ProjectDashboard.Domain;
+using ProjectDashboard.Domain.TimeZoneIntegration;
 using ProjectDashboard.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace ProjectDashboard.Controllers
     public class HomeController : Controller
     {
         private StoryService _service;
+        private TimeZoneService _tzService;
 
         public HomeController()
         {
@@ -20,6 +22,9 @@ namespace ProjectDashboard.Controllers
             var fileLoc = HostingEnvironment.MapPath("/");
 
             _service = new StoryService(int.Parse(ConfigurationManager.ConnectionStrings["AgileProjectID"].ConnectionString), ConfigurationManager.ConnectionStrings["AgileKey"].ConnectionString, fileLoc);
+
+            _tzService = new TimeZoneService();
+
         }
 
         public ActionResult Index()
@@ -56,6 +61,11 @@ namespace ProjectDashboard.Controllers
             _service.TakeSnapshot(snapshot);
 
             return RedirectToAction("Index", new { tagFilter = "" });
+        }
+
+        public ActionResult ShowNonStoryTimeZoneEntries()
+        {
+            return PartialView("_timezoneEntries", _tzService.EntriesNotAssignedToStories());
         }
 
         public ActionResult ShowEstimates(string tagFilter = "")
@@ -98,6 +108,11 @@ namespace ProjectDashboard.Controllers
             return PartialView("_latestStories", dashboardModel);
         }
 
+        public PartialViewResult ShowCompletedStories()
+        {
+            return PartialView("_stories", _service.GetStories().Where(x => x.Status == "Complete").OrderByDescending(x => x.ID).ToList());
+        }
+
         public PartialViewResult ShowLatestComments()
         {
             var dashboardModel = new DashboardModel();
@@ -112,15 +127,37 @@ namespace ProjectDashboard.Controllers
             return RedirectToAction("Index", new { tagFilter = tag });
         }
 
-        public ContentResult SaveActual(FormCollection form)
-        {
-            var storyID = int.Parse(form["storyID"].ToString());
-            var actual = decimal.Parse(form["actual"].ToString());
+        //public ContentResult SaveActual(FormCollection form)
+        //{
+        //    var storyID = int.Parse(form["storyID"].ToString());
+        //    var actual = decimal.Parse(form["actual"].ToString());
 
+        //    var c = new ContentResult();
+
+        //    c.Content = Math.Round(_service.SaveActual(storyID, actual) / 7, 2).ToString();
+            
+        //    return c;
+        //}
+
+        public ContentResult CompletedStoryAverageEstimateAccuracy()
+        {
             var c = new ContentResult();
 
-            c.Content = Math.Round(_service.SaveActual(storyID, actual) / 7, 2).ToString();
-            
+            c.Content = Math.Round(_service.CompletedStoryAverageEstimateAccuracy(), 2).ToString();
+
+            return c;
+        }
+
+        public ContentResult TimeSpentOnOtherStuff()
+        {
+            var c = new ContentResult();
+
+            var time = _tzService.EntriesNotAssignedToStories().Where(x => x.Role == "Senior Front End Developer" | x.Role == "Senior Developer" | x.Role == "Developer").Sum(x => x.Time) / 7;
+
+            var overhead = Math.Round(time, 2).ToString() + " which is a " + (Math.Round((time / _service.GetStories().Sum(x => x.Actual)) * 100)).ToString() + "% overhead";
+
+            c.Content = overhead;
+
             return c;
         }
 

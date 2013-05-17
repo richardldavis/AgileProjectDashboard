@@ -14,9 +14,20 @@
         </div>
     </section>
 }
-<h3>Total Time spent on stories</h3>
+<h3>Total time spent on stories</h3>
 @Model.TotalActual
-<h3>project details</h3>
+
+<h3>Among completed stories, the average accuracy of the estimate was:</h3>
+@{ Html.RenderAction("CompletedStoryAverageEstimateAccuracy"); } %
+
+<h3>Total time spent on 'other stuff'</h3>
+@{ Html.RenderAction("TimeSpentOnOtherStuff"); } 
+
+<h3>If this situation continues we will need</h3>
+<p>days that are not complete * -27% * 20%</p>
+
+
+
 <div id="estimates">
 @{ Html.RenderAction("ShowEstimates"); }
 </div>
@@ -29,11 +40,6 @@
     @Html.DropDownList("tags", Model.Tags as SelectList)
     <input type="submit" value="Go" />
 }
-
-<h2>Add time to stories being worked on</h2>
-<div id="current-work">
-@{ Html.RenderAction("ShowCurrentWork"); }
-</div>
 
 @using (Html.BeginForm("TakeSnapshot", "Home", FormMethod.Post))
 {
@@ -49,6 +55,23 @@
 @{ Html.RenderAction("ShowLatestComments"); }
 </div>
 
+<div id="complete-stories">
+<h2>completed stories</h2>
+@{ Html.RenderAction("ShowCompletedStories"); }
+</div>
+
+<div id="timezone-entries">
+@{ Html.RenderAction("ShowNonStoryTimeZoneEntries"); }
+</div>
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 
 <p>convert to codebase (On completion?)</p>
 

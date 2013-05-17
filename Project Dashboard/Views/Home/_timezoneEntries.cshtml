@@ -1,0 +1,21 @@
+﻿<h2>Non story timezone Entries</h2>
+<table>
+    <tr>
+            <td>Date</td>
+            <td>Time</td>
+            <td>Role</td>
+            <td>User</td>
+            <td>Description</td>
+    </tr>
+    
+    @foreach (ProjectDashboard.Domain.TimeZoneEntry tz in Model)
+    {
+        <tr>
+            <td>@tz.Date.ToString("d MMMM yyy")</td>
+            <td>@tz.Time</td>
+            <td>@tz.Role</td>
+            <td>@tz.User</td>
+            <td>@tz.Description</td>
+        </tr>
+    }
+</table>

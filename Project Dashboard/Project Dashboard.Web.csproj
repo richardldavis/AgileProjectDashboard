@@ -291,6 +291,8 @@
     <Content Include="Views\Home\_currentWork.cshtml" />
     <Content Include="Views\Home\_latestStories.cshtml" />
     <Content Include="Views\Home\_latestComments.cshtml" />
+    <Content Include="Views\Home\_timezoneEntries.cshtml" />
+    <Content Include="Views\Home\_stories.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

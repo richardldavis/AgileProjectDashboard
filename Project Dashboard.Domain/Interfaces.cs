@@ -1,5 +1,6 @@
 ﻿namespace ProjectDashboard.Domain
 {
+    using ProjectDashboard.Domain.TimeZoneIntegration;
     using System;
     using System.Collections.Generic;
 
@@ -26,6 +27,13 @@
     {
         IList<Story> GetStories();
         IList<Story> AddStories(IList<Story> story);
+        void ClearCache();
+    }
+
+    public interface ITimeZoneCache
+    {
+        IList<TimeZoneEntry> GetEntries();
+        IList<TimeZoneEntry> AddEntries(IList<TimeZoneEntry> entry);
         void ClearCache();
     }
 }
