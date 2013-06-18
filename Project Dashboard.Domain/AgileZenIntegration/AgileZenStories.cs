@@ -153,9 +153,9 @@ namespace ProjectDashboard.Domain
                 stories.Add(new Story
                 {
                     CreatedDate = DateTime.Parse(node.SelectSingleNode("metrics").SelectSingleNode("createTime").InnerText),
-                    Estimate = decimal.Parse(node.SelectSingleNode("size").InnerText.ToString()),
+                    Estimate = decimal.Parse(node.SelectSingleNode("size").InnerText.ToString() == "" ? "0" : node.SelectSingleNode("size").InnerText.ToString()),
                     Owner = node.SelectSingleNode("owner").SelectSingleNode("name").InnerText.ToString(),
-                    Priority = int.Parse(node.SelectSingleNode("priority").InnerText.ToString()),
+                    Priority = int.Parse(node.SelectSingleNode("priority").InnerText.ToString() == "" ? "0" : node.SelectSingleNode("priority").InnerText.ToString()),
                     Text = node.SelectSingleNode("text").InnerText.ToString(),
                     Link = "agilezen.com/project/" + _projectID.ToString() + "/story/" + node.SelectSingleNode("id").InnerText.ToString(),
                     ID = storyID,

@@ -38,6 +38,10 @@ namespace ProjectDashboard.Controllers
 
             dashboardModel.TotalActual = Math.Round(_service.GetStories().Sum(x => x.Actual),2);
 
+            dashboardModel.TotalCompleteEstimateValue = Math.Round(_service.GetStories().Where(y => y.Status=="Complete").Sum(x => x.Estimate), 2);
+
+            dashboardModel.TotalCompleteActualValue = Math.Round(_service.GetStories().Where(y => y.Status == "Complete").Sum(x => x.Actual), 2);
+
             dashboardModel.Tags = new SelectList(list, "Value", "Text", null); 
 
             return View(dashboardModel);
@@ -50,12 +54,14 @@ namespace ProjectDashboard.Controllers
             var stories = _service.GetStories();
 
             var snapshot = new Snapshot { 
-                Date = DateTime.Now, 
+                Date = DateTime.Now.Date, 
                 TotalNumberOfStories = stories.Count(),  
                 StoriesBeingWorkedOn = stories.Where(x => x.Status == "Working").Count(), 
                 TotalEstimate = stories.Sum(x => x.Estimate),
                 StoriesCompleted = stories.Where(x => x.Status == "Complete").Count(),
-                TotalTimeSpent = stories.Sum(x => x.Actual), 
+                TotalTimeSpent = stories.Sum(x => x.Actual),
+                StoriesCompletedEstimateValue = stories.Where(x => x.Status == "Complete").Sum(x => x.Estimate),
+                StoriesCompletedActualValue = stories.Where(x => x.Status == "Complete").Sum(x => x.Actual)
             };
 
             _service.TakeSnapshot(snapshot);

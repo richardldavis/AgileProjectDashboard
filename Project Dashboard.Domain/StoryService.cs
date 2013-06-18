@@ -63,7 +63,7 @@
             foreach (var story in stories)
             {
 
-                story.Actual = _timezone.TotalTimeForStory(story.ID) / 7;
+                story.Actual = Math.Round(_timezone.TotalTimeForStory(story.ID) / 7, 2);
 
                 // get annotations
                 var annotations = _actualRepo.Get(story.ID).Annotations;
@@ -117,7 +117,7 @@
 
         public decimal CompletedStoryAverageEstimateAccuracy()
         {
-            return GetStories().Where(x => x.Status == "Complete").Average(y => ((y.Actual - y.Estimate) / y.Estimate) * 100);
+            return GetStories().Where(x => x.Status == "Complete" && x.Estimate > 0).Average(y => ((y.Actual - y.Estimate) / y.Estimate) * 100);
             
         }
 

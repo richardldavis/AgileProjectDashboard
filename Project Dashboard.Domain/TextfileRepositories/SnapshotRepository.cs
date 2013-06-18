@@ -21,6 +21,9 @@ namespace ProjectDashboard.Domain
 
         public decimal TotalTimeSpent { get; set; }
 
+        public decimal StoriesCompletedEstimateValue { get; set; }
+
+        public decimal StoriesCompletedActualValue { get; set; }
     }
 
 
@@ -35,8 +38,15 @@ namespace ProjectDashboard.Domain
         public void Save(Snapshot snapshot)
         {
             var fileName = _fileRoot + "App_Data\\snapshots.txt";
-              
-            var snapshotText = snapshot.Date + " " + snapshot.StoriesBeingWorkedOn + " " + snapshot.StoriesCompleted + " " + snapshot.TotalEstimate + " " + snapshot.TotalNumberOfStories + " " + snapshot.TotalTimeSpent;
+
+            var snapshotText = snapshot.Date + ","
+                             + snapshot.StoriesBeingWorkedOn + ","
+                             + snapshot.StoriesCompleted + ","
+                             + snapshot.TotalEstimate + ","
+                             + snapshot.TotalNumberOfStories + ","
+                             + snapshot.TotalTimeSpent + ","
+                             + snapshot.StoriesCompletedEstimateValue + ","
+                             + snapshot.StoriesCompletedActualValue;
 
             using (StreamWriter w = File.AppendText(fileName))
             {

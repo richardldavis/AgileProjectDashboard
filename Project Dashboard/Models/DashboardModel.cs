@@ -23,6 +23,10 @@ namespace ProjectDashboard.Models
 
         public decimal TotalActual { get; set; }
 
+        public decimal TotalCompleteEstimateValue { get; set; }
+
+        public decimal TotalCompleteActualValue { get; set; }  
+
         public List<KeyValuePair<string, string>> EstimateByPriority { get; set; }
 
         public List<Completeness> CompletenessByPriority { get; set; }

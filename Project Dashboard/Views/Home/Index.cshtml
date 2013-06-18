@@ -20,13 +20,13 @@
 <h3>Among completed stories, the average accuracy of the estimate was:</h3>
 @{ Html.RenderAction("CompletedStoryAverageEstimateAccuracy"); } %
 
+<p>i.e. we completed @Model.TotalCompleteEstimateValue days worth of work in @Model.TotalCompleteActualValue days</p>
+
 <h3>Total time spent on 'other stuff'</h3>
 @{ Html.RenderAction("TimeSpentOnOtherStuff"); } 
 
 <h3>If this situation continues we will need</h3>
 <p>days that are not complete * -27% * 20%</p>
-
-
 
 <div id="estimates">
 @{ Html.RenderAction("ShowEstimates"); }
