@@ -1,14 +1,12 @@
-﻿<h5>Current Total Estimate in Days</h5>
-       
-<h2>@Model.TotalEstimate</h2>
+﻿<h3>Completeness</h3>
+@foreach (var completeness in Model.CompletenessByPriority)
+{
+    <p>Phase @completeness.Label:  <strong>is @completeness.Complete<text>%</text></strong> complete. We are currently working on <strong>@completeness.Working</strong><text>%</text></p>
+}
+
+<p>The total estimate for the project is @Model.TotalEstimate days</p>
 
 @foreach (var priority in Model.EstimateByPriority)
 {
     <p>Phase @priority.Key:  <strong>@priority.Value days</strong> </p>
-}
-
-<h3>Completeness</h3>
-@foreach (var completeness in Model.CompletenessByPriority)
-{
-    <p>Phase @completeness.Label:  <strong>is @completeness.Complete<text>%</text> complete</strong>, and @completeness.Working<text>%</text> is currently being worked on</p>
 }

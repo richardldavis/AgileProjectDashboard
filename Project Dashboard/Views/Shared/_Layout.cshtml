@@ -17,14 +17,12 @@
                     <p class="site-title">@Html.ActionLink("project dashboard", "Index", "Home")</p>
                 </div>
                 <div class="float-right">
-                    <section id="login">
-                        @Html.Partial("_LoginPartial")
-                    </section>
+                    
                     <nav>
                         <ul id="menu">
-                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                            <li>@Html.ActionLink("About", "About", "Home")</li>
-                            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                            <li>@Html.ActionLink("Dashboard", "Index", "Home")</li>
+                            <li>@Html.ActionLink("Admin", "Admin", "Home")</li>
+                            <li>@Html.ActionLink("Future Developments", "Future", "Home")</li>
                         </ul>
                     </nav>
                 </div>

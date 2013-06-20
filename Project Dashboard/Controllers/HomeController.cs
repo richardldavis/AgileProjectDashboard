@@ -15,6 +15,8 @@ namespace ProjectDashboard.Controllers
     {
         private StoryService _service;
         private TimeZoneService _tzService;
+        private decimal _timeNotAssignedToStories;
+        private decimal _overhead;
 
         public HomeController()
         {
@@ -25,7 +27,29 @@ namespace ProjectDashboard.Controllers
 
             _tzService = new TimeZoneService();
 
+            _timeNotAssignedToStories = Math.Round(_tzService.EntriesNotAssignedToStories().Where(x => x.Role == "Senior Front End Developer" | x.Role == "Senior Developer" | x.Role == "Developer").Sum(x => x.Time) / 7,2);
+
+            _overhead = Math.Round(_timeNotAssignedToStories / _service.GetStories().Sum(x => x.Actual) * 100, 2);
         }
+
+        public ActionResult Admin()
+        {
+            return View();
+        }
+
+        public ActionResult Future()
+        {
+            var dashboardModel = new DashboardModel();
+
+            var list = _service.GetTags()
+                     .Select(x => new SelectListItem { Text = x, Value = x })
+                     .ToList();
+            
+            dashboardModel.Tags = new SelectList(list, "Value", "Text", null); 
+
+            return View(dashboardModel);
+        }
+
 
         public ActionResult Index()
         {
@@ -38,11 +62,14 @@ namespace ProjectDashboard.Controllers
 
             dashboardModel.TotalActual = Math.Round(_service.GetStories().Sum(x => x.Actual),2);
 
+            dashboardModel.OtherStuffOverheadPercentage = _overhead;
+
+            dashboardModel.Phase1DaysOutstanding = _service.GetStories().Where(x => x.Priority == 1 && x.Status == "Ready To Work on").Sum(y => y.Estimate) +
+                                                   (_service.GetStories().Where(x => x.Priority == 1 && x.Status == "Working").Sum(y => y.Estimate) * (decimal)0.5);
+
             dashboardModel.TotalCompleteEstimateValue = Math.Round(_service.GetStories().Where(y => y.Status=="Complete").Sum(x => x.Estimate), 2);
 
             dashboardModel.TotalCompleteActualValue = Math.Round(_service.GetStories().Where(y => y.Status == "Complete").Sum(x => x.Actual), 2);
-
-            dashboardModel.Tags = new SelectList(list, "Value", "Text", null); 
 
             return View(dashboardModel);
            
@@ -154,13 +181,14 @@ namespace ProjectDashboard.Controllers
             return c;
         }
 
+        
+
         public ContentResult TimeSpentOnOtherStuff()
         {
             var c = new ContentResult();
 
-            var time = _tzService.EntriesNotAssignedToStories().Where(x => x.Role == "Senior Front End Developer" | x.Role == "Senior Developer" | x.Role == "Developer").Sum(x => x.Time) / 7;
 
-            var overhead = Math.Round(time, 2).ToString() + " which is a " + (Math.Round((time / _service.GetStories().Sum(x => x.Actual)) * 100)).ToString() + "% overhead";
+            var overhead = "<strong>" + _timeNotAssignedToStories.ToString() + "</strong> days (which is a " + _overhead.ToString() + "% overhead)";
 
             c.Content = overhead;
 

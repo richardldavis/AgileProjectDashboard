@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Admin";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+              blurb
+            </p>
+        </div>
+    </section>
+}
+
+<h2>Admin</h2>
+
+@using (Html.BeginForm("TakeSnapshot", "Home", FormMethod.Post))
+{
+    <input type="submit" value="Take Snapshot" />
+}
+
+<div id="recent-stories">
+@{ Html.RenderAction("ShowLatestStories"); }
+</div>
+
+
+<div id="recent-comments">
+@{ Html.RenderAction("ShowLatestComments"); }
+</div>
+
+<div id="complete-stories">
+<h2>completed stories</h2>
+@{ Html.RenderAction("ShowCompletedStories"); }
+</div>
+
+<div id="timezone-entries">
+@{ Html.RenderAction("ShowNonStoryTimeZoneEntries"); }
+</div>

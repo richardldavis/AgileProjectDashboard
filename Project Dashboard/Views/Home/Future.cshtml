@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Admin";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+              Future dev
+            </p>
+        </div>
+    </section>
+}
+
+
+<h2>Future development ideas</h2>
+
+<h2>Filter By Tag</h2>
+
+@using (Html.BeginForm("ShowEstimates", "Home", FormMethod.Post, new { id = "form-tag-filter" }))
+{
+    @Html.DropDownList("tags", Model.Tags as SelectList)
+    <input type="submit" value="Go" />
+}
+
+@*<h3>Among completed stories, the average accuracy of the estimate was:</h3>
+@{ Html.RenderAction("CompletedStoryAverageEstimateAccuracy"); } %*@
+
+<p>convert to codebase (On completion?)</p>
+
+<p>switch between days an hours?</p>
+
+<p>stories that have been worked on for too long</p>
+
+<p>stories that have been in the working column with no progress</p>
+
+<p>stories changed by client</p>
+
+<p>estimated project completion date</p>
+
+<p>people in project</p>
+
+<p>Link to successful acceptance test?</p>
+
+
+@section scripts {
+    
+ <script>
+     $(function () {
+        
+         $('#form-tag-filter').submit(function () {
+
+             var dataString = 'tagFilter=' + $("#tags").val()
+
+             PostAjax(this.action, this.method, dataString, '#estimates');
+
+             return false;
+         });
+
+         $('.post-actual').submit(function () {
+
+             var ID = $(this).find('input[name=storyID]').val();
+
+             var dataString = 'storyID=' + ID  + "&Actual=" + $(this).find('input[name=Actual]').val()
+                        
+             PostAjax(this.action, this.method, dataString, '#actual' + ID );
+
+             return false;
+         });
+
+     });
+
+     function PostAjax(action, method, dataString, resultID) {
+
+         $.ajax({
+             url: action,
+             type: method,
+             data: dataString,
+             success: function (result) {
+
+                 $(resultID).html(result);
+                 //$('#estimates').html(result);
+             }
+         });
+     }
+
+    </script>
+
+}

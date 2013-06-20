@@ -14,123 +14,25 @@
         </div>
     </section>
 }
-<h3>Total time spent on stories</h3>
-@Model.TotalActual
+<p>In total we have spent <strong>@Model.TotalActual</strong> days working directly on stories</p>
 
-<h3>Among completed stories, the average accuracy of the estimate was:</h3>
-@{ Html.RenderAction("CompletedStoryAverageEstimateAccuracy"); } %
+<p>We have spent a further @{ Html.RenderAction("TimeSpentOnOtherStuff"); } doing stuff like meetings, prep for meetings, general management overhead and so on.</p>
 
-<p>i.e. we completed @Model.TotalCompleteEstimateValue days worth of work in @Model.TotalCompleteActualValue days</p>
 
-<h3>Total time spent on 'other stuff'</h3>
-@{ Html.RenderAction("TimeSpentOnOtherStuff"); } 
 
-<h3>If this situation continues we will need</h3>
-<p>days that are not complete * -27% * 20%</p>
+<p>We have completed work that we estimated would take <strong>@Model.TotalCompleteEstimateValue</strong> days in <strong>@Model.TotalCompleteActualValue</strong> days</p>
+
+<p>This means that roughly speaking we took <strong>@Model.EstimateAccuracy%</strong> of the time we expected to take.</p>
+ 
+<p>Looking ahead, if we assume that stories being worked on are roughly <strong>50%</strong> complete, and our actuals continue to be <strong>@Model.EstimateAccuracy%</strong> of our estimates, and that we continue to have a <strong>@Model.OtherStuffOverheadPercentage%</strong> management overhead, we will need <strong>@Model.DaysToCompletion</strong> more days to complete phase 1</p>
+
+
 
 <div id="estimates">
 @{ Html.RenderAction("ShowEstimates"); }
 </div>
 
-
-<h2>Filter By Tag</h2>
-
-@using (Html.BeginForm("ShowEstimates", "Home", FormMethod.Post, new { id = "form-tag-filter" }))
-{
-    @Html.DropDownList("tags", Model.Tags as SelectList)
-    <input type="submit" value="Go" />
-}
-
-@using (Html.BeginForm("TakeSnapshot", "Home", FormMethod.Post))
-{
-    <input type="submit" value="Take Snapshot" />
-}
-
-<div id="recent-stories">
-@{ Html.RenderAction("ShowLatestStories"); }
-</div>
-
-
-<div id="recent-comments">
-@{ Html.RenderAction("ShowLatestComments"); }
-</div>
-
-<div id="complete-stories">
-<h2>completed stories</h2>
-@{ Html.RenderAction("ShowCompletedStories"); }
-</div>
-
-<div id="timezone-entries">
-@{ Html.RenderAction("ShowNonStoryTimeZoneEntries"); }
-</div>
-
-
+<h2>Burnup charts!</h2>
+<img src="/images/chart1.png" />
 <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-
-<p>convert to codebase (On completion?)</p>
-
-<p>switch between days an hours?</p>
-
-<p>stories that have been worked on for too long</p>
-
-<p>stories that have been in the working column with no progress</p>
-
-<p>stories changed by client</p>
-
-<p>estimated project completion date</p>
-
-<p>people in project</p>
-
-<p>Link to successful acceptance test?</p>
-
-
-@section scripts {
-    
- <script>
-     $(function () {
-        
-         $('#form-tag-filter').submit(function () {
-
-             var dataString = 'tagFilter=' + $("#tags").val()
-
-             PostAjax(this.action, this.method, dataString, '#estimates');
-
-             return false;
-         });
-
-         $('.post-actual').submit(function () {
-
-             var ID = $(this).find('input[name=storyID]').val();
-
-             var dataString = 'storyID=' + ID  + "&Actual=" + $(this).find('input[name=Actual]').val()
-                        
-             PostAjax(this.action, this.method, dataString, '#actual' + ID );
-
-             return false;
-         });
-
-     });
-
-     function PostAjax(action, method, dataString, resultID) {
-
-         $.ajax({
-             url: action,
-             type: method,
-             data: dataString,
-             success: function (result) {
-
-                 $(resultID).html(result);
-                 //$('#estimates').html(result);
-             }
-         });
-     }
-
-    </script>
-    
-}
+<img src="/images/chart2.png" />
