@@ -1,24 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectDashboard.Domain
+﻿namespace ProjectDashboard.Domain
 {
+    using System.Net;
+    using System.Text;
+
     public class AgileZenBase
     {
-        protected int _projectID;
-        protected string _apiKey;
+        #region Constructor
 
-        public AgileZenBase(int projectID, string apiKey)
+        public AgileZenBase(int projectId, string apiKey)
         {
-            _projectID = projectID;
-            _apiKey = apiKey;
+            ProjectId = projectId;
+            ApiKey = apiKey;
         }
 
+        #endregion
+
+        #region Properties
+
+        protected int ProjectId { get; private set; }
+
+        protected string ApiKey { get; private set; }
+
+        #endregion
+
+        #region Methods
 
         protected HttpWebResponse Post(string requestString, string postData)
         {
@@ -28,15 +33,17 @@ namespace ProjectDashboard.Domain
             addRequest.Method = "POST";
 
             var encoding = new ASCIIEncoding();
-            byte[] data = encoding.GetBytes(postData);
+            var data = encoding.GetBytes(postData);
             addRequest.ContentLength = data.Length;
 
-            using (Stream stream = addRequest.GetRequestStream())
+            using (var stream = addRequest.GetRequestStream())
             {
                 stream.Write(data, 0, data.Length);
             }
 
             return (HttpWebResponse)addRequest.GetResponse();
         }
+
+        #endregion
     }
 }

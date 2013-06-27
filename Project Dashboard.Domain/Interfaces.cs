@@ -13,7 +13,7 @@
 
     public interface ICommentRepository
     {
-        void Add(int storyID, string text);
+        void Add(int storyId, string text);
         //void GetComments();
     }
 

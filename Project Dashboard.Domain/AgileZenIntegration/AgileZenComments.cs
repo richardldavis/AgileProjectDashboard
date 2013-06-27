@@ -1,26 +1,25 @@
 ﻿namespace ProjectDashboard.Domain
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Caching;
-
     public class AgileZenCommentRepository : AgileZenBase, ICommentRepository
     {
-    
-        public AgileZenCommentRepository(int projectID, string apiKey) : base(projectID, apiKey)
+        #region Constructor
+
+        public AgileZenCommentRepository(int projectId, string apiKey)
+            : base(projectId, apiKey)
         {
         }
 
-        public void Add(int storyID, string text)
+        #endregion
+
+        #region Methods
+
+        public void Add(int storyId, string text)
         {
-
-            var request = "https://agilezen.com/api/v1/projects/" + _projectID.ToString() + "/stories/" + storyID + "/comments/?apikey=" + _apiKey;
-
-            string postData = "{text: '" + text + "'}";
-
+            var request = string.Format("https://agilezen.com/api/v1/projects/{0}/stories/{1}/comments/?apikey={2}", ProjectId, storyId, ApiKey);
+            var postData = string.Format("{{text: '{0}'}}", text);
             Post(request, postData);
         }
 
-        
+        #endregion
     }
 }
