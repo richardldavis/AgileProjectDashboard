@@ -10,6 +10,7 @@
     using Domain;
     using Domain.TimeZoneIntegration;
     using Models;
+    using ProjectDashboard.Model.Stories;
     using Zone.Library.Mvc.ActionResults;
     using Zone.Library.Mvc.ActionResults.Pdf;
 
