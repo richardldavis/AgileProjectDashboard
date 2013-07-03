@@ -14,6 +14,10 @@
         </div>
     </section>
 }
+<h3>Stories</h3>
+<p>@Html.ActionLink("Download as PDF", "DownloadStories")</p>
+
+<h3>Summary</h3>
 <p>In total we have spent <strong>@Model.TotalActual</strong> days working directly on stories</p>
 
 <p>We have spent a further @{ Html.RenderAction("TimeSpentOnOtherStuff"); } doing stuff like meetings, prep for meetings, general management overhead and so on.</p>
@@ -32,7 +36,7 @@
 @{ Html.RenderAction("ShowEstimates"); }
 </div>
 
-<h2>Burnup charts!</h2>
+<h3>Burnup charts!</h3>
 <img src="/images/chart1.png" />
 <br />
 <img src="/images/chart2.png" />

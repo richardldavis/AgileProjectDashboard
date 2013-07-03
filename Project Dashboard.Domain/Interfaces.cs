@@ -3,6 +3,7 @@
     using ProjectDashboard.Domain.TimeZoneIntegration;
     using System;
     using System.Collections.Generic;
+    using Model.Stories;
 
     public interface IStoryRepository
     {

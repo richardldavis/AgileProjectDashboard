@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ProjectDashboard.Model.Stories;
 
 namespace ProjectDashboard.Models
 {
@@ -25,21 +26,16 @@ namespace ProjectDashboard.Models
 
         public decimal OtherStuffOverheadPercentage { get; set; }
 
-        public decimal DaysToCompletion {
-            get
-            {
-                return Math.Round((OtherStuffOverheadPercentage / 100 * Phase1DaysOutstanding) + (Phase1DaysOutstanding * EstimateAccuracy / 100), 2);
-            }
-        
+        public decimal DaysToCompletion
+        {
+            get { return Phase1DaysOutstanding == 0 ? 0 : Math.Round((OtherStuffOverheadPercentage / 100 * Phase1DaysOutstanding) + (Phase1DaysOutstanding * EstimateAccuracy / 100), 2); }
         }
 
         public decimal Phase1DaysOutstanding { get; set; }
 
-        public decimal EstimateAccuracy {
-            get
-            {
-                return Math.Round(100 - ((TotalCompleteEstimateValue - TotalCompleteActualValue) / TotalCompleteEstimateValue) * 100,2);
-            }
+        public decimal EstimateAccuracy
+        {
+            get { return TotalCompleteEstimateValue == 0 ? 0 : Math.Round(100 - ((TotalCompleteEstimateValue - TotalCompleteActualValue) / TotalCompleteEstimateValue) * 100, 2); }
         }
 
         public decimal TotalCompleteEstimateValue { get; set; }

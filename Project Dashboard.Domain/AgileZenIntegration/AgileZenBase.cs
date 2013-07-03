@@ -5,6 +5,12 @@
 
     public class AgileZenBase
     {
+        #region Fields
+
+        protected const string ApiRootUrl = "https://agilezen.com/api/v1/";
+
+        #endregion
+
         #region Constructor
 
         public AgileZenBase(int projectId, string apiKey)

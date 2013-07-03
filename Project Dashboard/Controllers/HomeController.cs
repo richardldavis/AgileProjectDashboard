@@ -1,22 +1,33 @@
-﻿using ProjectDashboard.Domain;
-using ProjectDashboard.Domain.TimeZoneIntegration;
-using ProjectDashboard.Models;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
-using System.Web.Hosting;
-using System.Web.Mvc;
-
-namespace ProjectDashboard.Controllers
+﻿namespace ProjectDashboard.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Linq;
+    using System.Text;
+    using System.Web.Hosting;
+    using System.Web.Mvc;
+    using Domain;
+    using Domain.TimeZoneIntegration;
+    using Models;
+    using Zone.Library.Mvc.ActionResults;
+    using Zone.Library.Mvc.ActionResults.Pdf;
+
     public class HomeController : Controller
     {
-        private StoryService _service;
-        private TimeZoneService _tzService;
-        private decimal _timeNotAssignedToStories;
-        private decimal _overhead;
+        #region Fields
+
+        private readonly StoryService _service;
+        
+        private readonly TimeZoneService _tzService;
+        
+        private readonly decimal _timeNotAssignedToStories;
+
+        private readonly decimal _overhead;
+
+        #endregion
+
+        #region Constructor
 
         public HomeController()
         {
@@ -31,6 +42,10 @@ namespace ProjectDashboard.Controllers
 
             _overhead = Math.Round(_timeNotAssignedToStories / _service.GetStories().Sum(x => x.Actual) * 100, 2);
         }
+
+        #endregion
+
+        #region Action methods
 
         public ActionResult Admin()
         {
@@ -50,10 +65,8 @@ namespace ProjectDashboard.Controllers
             return View(dashboardModel);
         }
 
-
         public ActionResult Index()
         {
-
             var dashboardModel = new DashboardModel();
            
             var list = _service.GetTags()
@@ -125,6 +138,68 @@ namespace ProjectDashboard.Controllers
             return PartialView("_estimates", dashboardModel);
         }
 
+        public ActionResult TagFilter(FormCollection form)
+        {
+            var tag = form["tags"].ToString();
+            return RedirectToAction("Index", new { tagFilter = tag });
+        }
+
+        //public ContentResult SaveActual(FormCollection form)
+        //{
+        //    var storyID = int.Parse(form["storyID"].ToString());
+        //    var actual = decimal.Parse(form["actual"].ToString());
+
+        //    var c = new ContentResult();
+
+        //    c.Content = Math.Round(_service.SaveActual(storyID, actual) / 7, 2).ToString();
+
+        //    return c;
+        //}
+
+        public ContentResult CompletedStoryAverageEstimateAccuracy()
+        {
+            var c = new ContentResult();
+
+            c.Content = Math.Round(_service.CompletedStoryAverageEstimateAccuracy(), 2).ToString();
+
+            return c;
+        }
+
+        public ContentResult TimeSpentOnOtherStuff()
+        {
+            var c = new ContentResult();
+
+            var overhead = "<strong>" + _timeNotAssignedToStories.ToString() + "</strong> days (which is a " + _overhead.ToString() + "% overhead)";
+
+            c.Content = overhead;
+
+            return c;
+        }
+
+        public ActionResult Stories()
+        {
+         var stories =   _service.GetStories();
+            return View(new StoriesModel
+                            {
+                                Stories = stories,
+                            });
+        }
+
+        public PdfResult DownloadStories()
+        {
+            var html = System.IO.File.ReadAllText(Server.MapPath("~/privacy-policy.html"));
+
+            return new PdfResult
+                       {
+                           HtmlContent = html,
+                           FileName = "pdf.pdf",
+                       };
+        }
+
+        #endregion
+
+        #region Partial methods
+
         public PartialViewResult ShowCurrentWork()
         {
             var dashboardModel = new DashboardModel();
@@ -154,50 +229,6 @@ namespace ProjectDashboard.Controllers
             return PartialView("_latestComments", dashboardModel);
         }
 
-        public ActionResult TagFilter(FormCollection form)
-        {
-            var tag = form["tags"].ToString();
-            return RedirectToAction("Index", new { tagFilter = tag });
-        }
-
-        //public ContentResult SaveActual(FormCollection form)
-        //{
-        //    var storyID = int.Parse(form["storyID"].ToString());
-        //    var actual = decimal.Parse(form["actual"].ToString());
-
-        //    var c = new ContentResult();
-
-        //    c.Content = Math.Round(_service.SaveActual(storyID, actual) / 7, 2).ToString();
-            
-        //    return c;
-        //}
-
-        public ContentResult CompletedStoryAverageEstimateAccuracy()
-        {
-            var c = new ContentResult();
-
-            c.Content = Math.Round(_service.CompletedStoryAverageEstimateAccuracy(), 2).ToString();
-
-            return c;
-        }
-
-        
-
-        public ContentResult TimeSpentOnOtherStuff()
-        {
-            var c = new ContentResult();
-
-
-            var overhead = "<strong>" + _timeNotAssignedToStories.ToString() + "</strong> days (which is a " + _overhead.ToString() + "% overhead)";
-
-            c.Content = overhead;
-
-            return c;
-        }
-
-        public decimal GetEstimateForPriority(int priority)
-        {
-            return _service.GetTotalEstimateForProject(priority);
-        }
+        #endregion
     }
 }
