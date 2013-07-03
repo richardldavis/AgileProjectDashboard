@@ -29,6 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -169,6 +170,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\StoriesModel.cs" />
     <Compile Include="Models\DashboardModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -288,6 +290,7 @@
     <Content Include="Views\Home\_stories.cshtml" />
     <Content Include="Views\Home\Admin.cshtml" />
     <Content Include="Views\Home\Future.cshtml" />
+    <Content Include="Views\Home\Stories.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -297,6 +300,14 @@
     <ProjectReference Include="..\Project Dashboard.Domain\Project Dashboard.Domain.csproj">
       <Project>{6a4cb108-09f3-4416-8fab-084d1d46fcd0}</Project>
       <Name>Project Dashboard.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Project Dashboard.Model\Project Dashboard.Model.csproj">
+      <Project>{c58f1006-edb0-4e32-ad01-e47bc79c7d49}</Project>
+      <Name>Project Dashboard.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Project Dashboard.Web.Extensions\Project Dashboard.Web.Extensions.csproj">
+      <Project>{52029784-e1d4-4083-a5e8-78bf41c5a0a9}</Project>
+      <Name>Project Dashboard.Web.Extensions</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

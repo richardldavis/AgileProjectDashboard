@@ -3,6 +3,7 @@
     using ProjectDashboard.Domain.TimeZoneIntegration;
     using System;
     using System.Collections.Generic;
+    using Model.Stories;
 
     public interface IStoryRepository
     {
@@ -13,7 +14,7 @@
 
     public interface ICommentRepository
     {
-        void Add(int storyID, string text);
+        void Add(int storyId, string text);
         //void GetComments();
     }
 

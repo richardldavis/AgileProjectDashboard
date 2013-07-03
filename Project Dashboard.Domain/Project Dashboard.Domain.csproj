@@ -43,16 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="TextfileRepositories\ActualRepository.cs" />
     <Compile Include="AgileZenIntegration\AgileZenBase.cs" />
     <Compile Include="AgileZenIntegration\AgileZenCache.cs" />
-    <Compile Include="AgileZenIntegration\AgileZenStories.cs" />
-    <Compile Include="AgileZenIntegration\AgileZenComments.cs" />
+    <Compile Include="AgileZenIntegration\AgileZenStoryRepository.cs" />
+    <Compile Include="AgileZenIntegration\AgileZenCommentRepository.cs" />
     <Compile Include="TextfileRepositories\BaseTextfileRepository.cs" />
     <Compile Include="TextfileRepositories\SnapshotRepository.cs" />
     <Compile Include="StoryAnnotation.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="Story.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoryService.cs" />
     <Compile Include="TimeZoneIntegration\TimeZoneCache.cs" />
@@ -61,6 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Project Dashboard.Model\Project Dashboard.Model.csproj">
+      <Project>{c58f1006-edb0-4e32-ad01-e47bc79c7d49}</Project>
+      <Name>Project Dashboard.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

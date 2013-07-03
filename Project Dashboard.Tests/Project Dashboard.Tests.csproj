@@ -109,6 +109,10 @@
       <Project>{6a4cb108-09f3-4416-8fab-084d1d46fcd0}</Project>
       <Name>Project Dashboard.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Project Dashboard.Model\Project Dashboard.Model.csproj">
+      <Project>{c58f1006-edb0-4e32-ad01-e47bc79c7d49}</Project>
+      <Name>Project Dashboard.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Project Dashboard\Project Dashboard.Web.csproj">
       <Project>{09CFF09C-586D-49B2-A6B0-46CF85AC43D3}</Project>
       <Name>Project Dashboard.Web</Name>

@@ -12,7 +12,7 @@ namespace ProjectDashboard.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            var model = new AgileZenModel(53698, "fda90b3f792f412e9a9b3139f9867ded");
+            var model = new AgileZenStoryRepository(53698, "fda90b3f792f412e9a9b3139f9867ded");
         }
 
         [TestMethod]

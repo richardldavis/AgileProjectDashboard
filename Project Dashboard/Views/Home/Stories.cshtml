@@ -1,0 +1,25 @@
+﻿@model ProjectDashboard.Models.StoriesModel
+@using ProjectDashboard.Model.Stories
+@{
+    ViewBag.Title = "Stories";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+               your project dashboard
+            </p>
+        </div>
+    </section>
+}
+<h3>Stories</h3>
+<p>@Html.ActionLink("Download as PDF", "DownloadStories")</p>
+@foreach (var item in Model.Stories ?? new List<Story>())
+{
+    <h4>@item.Text</h4>
+    <p>Status: @item.Status</p>
+}

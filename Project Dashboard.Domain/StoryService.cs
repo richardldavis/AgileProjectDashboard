@@ -1,11 +1,10 @@
 ﻿namespace ProjectDashboard.Domain
 {
-    using ProjectDashboard.Domain.TimeZoneIntegration;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using Model.Stories;
+    using TimeZoneIntegration;
 
     public class StoryService
     {
@@ -20,7 +19,7 @@
 
         public StoryService(int projectID, string apiKey, string fileRoot)
         {
-            _storyRepo = new AgileZenModel(projectID, apiKey);
+            _storyRepo = new AgileZenStoryRepository(projectID, apiKey);
             _actualRepo = new StoryAnnotationRepository(projectID, fileRoot);
             _commentRepo = new AgileZenCommentRepository(projectID, apiKey);
             _cache = new StoryCache();
@@ -54,9 +53,7 @@
 
         public List<Story> GetStories()
         {
-            var stories = _cache.GetStories() == null ?
-                          _cache.AddStories(_storyRepo.GetStories()) : // the add method returns the stories
-                          _cache.GetStories();
+            var stories = _cache.GetStories() ?? _cache.AddStories(_storyRepo.GetStories());
 
             var annotatedStories = new List<Story>();
             
@@ -93,7 +90,7 @@
             var actual = GetStories().Where(x => x.Priority == priority || priority == 0).Where(x => x.Tags.Contains(tag) || tag == "").Where(x => x.Status == phase).Sum(x => x.Estimate);
             var estimate = GetTotalEstimateForProject(priority, tag);
 
-            return (actual/estimate) * 100;
+            return estimate == 0 ? 0 : (actual / estimate) * 100;
 
         }
 
