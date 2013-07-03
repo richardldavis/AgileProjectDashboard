@@ -1,5 +1,4 @@
 ﻿@model ProjectDashboard.Models.StoriesModel
-@using ProjectDashboard.Model.Stories
 @{
     ViewBag.Title = "Stories";
 }
@@ -17,9 +16,12 @@
     </section>
 }
 <h3>Stories</h3>
-<p>@Html.ActionLink("Download as PDF", "DownloadStories")</p>
-@foreach (var item in Model.Stories ?? new List<Story>())
+@if (Model.Stories == null || !Model.Stories.Any())
 {
-    <h4>@item.Text</h4>
-    <p>Status: @item.Status</p>
+    <p>The project has no stories.</p>
+}
+else
+{
+    <p>@Html.ActionLink("Download as PDF", "Stories", new { Layout = "pdf" })</p>
+    @Html.Partial("_storyList", Model.Stories)
 }

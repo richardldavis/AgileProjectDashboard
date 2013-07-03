@@ -1,0 +1,13 @@
+﻿@model ProjectDashboard.Models.StoriesModel
+@{
+    Layout = "../Shared/_MinimalLayout.cshtml";
+    ViewBag.Title = "Stories";
+}
+@if (Model.Stories == null || !Model.Stories.Any())
+{
+    <p>The project has no stories.</p>
+}
+else
+{
+    @Html.Partial("_storyList", Model.Stories)
+}

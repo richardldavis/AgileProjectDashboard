@@ -46,7 +46,7 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
 
             var fopPath = context.HttpContext.Server.MapPath("~/bin/fop/Fop.exe");
             var fo = GenerateFo(HtmlContent);
-            var pdf = GeneratePdf(fo, fopPath);
+            var pdf = GeneratePdf(fo, fopPath, context);
 
             var response = context.HttpContext.Response;
             response.ContentType = "application/pdf";
@@ -97,14 +97,16 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
             return Encoding.Default.GetBytes(fo);
         }
 
-        private static byte[] GeneratePdf(byte[] fo, string fopPath)
+        private static byte[] GeneratePdf(byte[] fo, string fopPath, ControllerContext context)
         {
+            var tempFoPath = context.RequestContext.HttpContext.Server.MapPath("~/App_Data/TEMP/fo.fo");
+            FileSystemHelper.SaveAsFile(tempFoPath, fo);
             var compiler = new Process
                                {
                                    StartInfo =
                                        {
                                            FileName = fopPath,
-                                           Arguments = "/fo:" + Convert.ToBase64String(fo),
+                                           Arguments = string.Format(@"/input:""{0}""", tempFoPath),
                                            UseShellExecute = false,
                                            RedirectStandardOutput = true,
                                        }
@@ -113,12 +115,14 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
             compiler.Start();
             var output = compiler.StandardOutput.ReadToEnd();
             compiler.WaitForExit();
+            FileSystemHelper.DeleteFile(tempFoPath);
 
             const string startFlag = "--pdf start--",
                          endFlag = "--pdf end--";
             var pdf = Convert.FromBase64String(output.Substring(0, output.IndexOf(endFlag, StringComparison.InvariantCulture))
                                                      .Substring(output.IndexOf(startFlag, StringComparison.InvariantCulture) + startFlag.Length)
                                                      .Trim());
+
             return pdf;
         }
 

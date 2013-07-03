@@ -60,10 +60,10 @@
             foreach (var story in stories)
             {
 
-                story.Actual = Math.Round(_timezone.TotalTimeForStory(story.ID) / 7, 2);
+                story.Actual = Math.Round(_timezone.TotalTimeForStory(story.Id) / 7, 2);
 
                 // get annotations
-                var annotations = _actualRepo.Get(story.ID).Annotations;
+                var annotations = _actualRepo.Get(story.Id).Annotations;
                
                 if (annotations.ContainsKey("last-changed"))
                 {

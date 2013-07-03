@@ -10,6 +10,7 @@
     using Domain;
     using Domain.TimeZoneIntegration;
     using Models;
+    using ProjectDashboard.Helpers;
     using Zone.Library.Mvc.ActionResults;
     using Zone.Library.Mvc.ActionResults.Pdf;
 
@@ -176,13 +177,29 @@
             return c;
         }
 
-        public ActionResult Stories()
+        public ActionResult Stories(string layout)
         {
-         var stories =   _service.GetStories();
-            return View(new StoriesModel
-                            {
-                                Stories = stories,
-                            });
+            var stories = _service.GetStories();
+            switch (layout)
+            {
+                case "minimal":
+                    return View("MinimalStories", new StoriesModel
+                                                      {
+                                                          Stories = stories,
+                                                      });
+                case "pdf":
+                    var html = NetHelper.RequestUrl(string.Format("{0}://{1}/{2}/{3}?layout=minimal", Request.Url.Scheme, Request.Url.Authority, ControllerContext.RouteData.Values["controller"], ControllerContext.RouteData.Values["action"]));
+                    return new PdfResult
+                               {
+                                   HtmlContent = html,
+                                   FileName = "stories.pdf",
+                               };
+                default:
+                    return View(new StoriesModel
+                                    {
+                                        Stories = stories,
+                                    });
+            }
         }
 
         public PdfResult DownloadStories()
@@ -211,14 +228,14 @@
         public PartialViewResult ShowLatestStories()
         {
             var dashboardModel = new DashboardModel();
-            dashboardModel.LatestStories = _service.GetStories().OrderByDescending(x => x.ID).Take(5).ToList();
+            dashboardModel.LatestStories = _service.GetStories().OrderByDescending(x => x.Id).Take(5).ToList();
            
             return PartialView("_latestStories", dashboardModel);
         }
 
         public PartialViewResult ShowCompletedStories()
         {
-            return PartialView("_stories", _service.GetStories().Where(x => x.Status == "Complete").OrderByDescending(x => x.ID).ToList());
+            return PartialView("_stories", _service.GetStories().Where(x => x.Status == "Complete").OrderByDescending(x => x.Id).ToList());
         }
 
         public PartialViewResult ShowLatestComments()

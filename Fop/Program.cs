@@ -9,19 +9,23 @@
     {
         private static void Main(string[] args)
         {
-            string sourceFo = null;
+            string sourceFo = null,
+                   outputFilePath = null;
             foreach (var arg in args)
             {
                 var key = arg.Substring(1, arg.IndexOf(":", StringComparison.InvariantCulture) - 1);
                 var value = arg.Substring(key.Length + 2);
                 switch (key)
                 {
-                    case "file":
+                    case "input":
                         sourceFo = File.ReadAllText(value);
                         break;
                     case "fo":
                         var fobytes = Convert.FromBase64String(value);
                         sourceFo = Encoding.Default.GetString(fobytes);
+                        break;
+                    case "output":
+                        outputFilePath = value;
                         break;
                 }
             }
@@ -47,9 +51,23 @@
                 pdf[i] = (byte)spdf[i];
             }
 
-            Console.WriteLine("--pdf start--");
-            Console.WriteLine(Convert.ToBase64String(pdf));
-            Console.WriteLine("--pdf end--");
+            if (outputFilePath == null)
+            {
+                Console.WriteLine("--pdf start--");
+                Console.WriteLine(Convert.ToBase64String(pdf));
+                Console.WriteLine("--pdf end--");
+            }
+            else
+            {
+                try
+                {
+                    File.WriteAllBytes(outputFilePath, pdf);
+                }
+                catch
+                {
+                    Console.WriteLine("Error writing to file: " + outputFilePath);
+                }
+            }
         }
     }
 }

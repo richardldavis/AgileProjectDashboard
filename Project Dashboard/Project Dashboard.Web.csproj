@@ -40,6 +40,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MarkdownDeep">
+      <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -169,6 +172,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MarkdownHelper.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\StoriesModel.cs" />
     <Compile Include="Models\DashboardModel.cs" />
@@ -291,6 +295,9 @@
     <Content Include="Views\Home\Admin.cshtml" />
     <Content Include="Views\Home\Future.cshtml" />
     <Content Include="Views\Home\Stories.cshtml" />
+    <Content Include="Views\Home\_storyList.cshtml" />
+    <Content Include="Views\Home\MinimalStories.cshtml" />
+    <Content Include="Views\Shared\_MinimalLayout.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
