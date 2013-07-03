@@ -74,33 +74,47 @@
             var stories = new List<Story>();
             foreach (XmlNode node in GetStoriesAsXml())
             {
-                var storyId = int.Parse(node.GetText("id"));
-                
-                var comments = node.SelectNodes("comments/comment").Cast<XmlNode>()
-                              .Select(i => new Comment
-                                               {
-                                                   Who = i.GetText("author/name"),
-                                                   Date = DateTime.Parse(i.GetText("createTime")),
-                                                   Story = storyId,
-                                                   Text = i.GetText("text"),
-                                               }).ToList();
+                var story = new Story
+                                {
+                                    Id = int.Parse(node.GetText("id")),
+                                    CreatedDate = DateTime.Parse(node.GetText("metrics/createTime")),
+                                    Text = node.GetText("text"),
+                                    Details = node.GetText("details"),
+                                    Priority = string.IsNullOrEmpty(node.GetText("priority")) ? 0 : int.Parse(node.GetText("priority")),
+                                    Status = node.GetText("phase/name"),
+                                    Estimate = string.IsNullOrEmpty(node.GetText("size")) ? 0 : decimal.Parse(node.GetText("size")),
+                                    Owner = node.GetText("owner/name"),
+                                    Link = string.Format("agilezen.com/project/{0}/story/{1}", ProjectId, node.GetText("id")),
+                                };
+                story.Comments.AddRange(node.SelectNodes("comments/comment").Cast<XmlNode>()
+                                            .Select(i => new Comment
+                                                             {
+                                                                 Story = story.Id,
+                                                                 Who = i.GetText("author/name"),
+                                                                 Date = DateTime.Parse(i.GetText("createTime")),
+                                                                 Text = i.GetText("text"),
+                                                             }));
+                story.Tags.AddRange(node.SelectNodes("tags/tag").Cast<XmlNode>()
+                                        .Select(i => i.GetText("name")));
+                story.Tasks.AddRange(node.SelectNodes("tasks/task").Cast<XmlNode>()
+                                         .Select(i =>
+                                                     {
+                                                         var task = new Task
+                                                                        {
+                                                                            Story = story.Id,
+                                                                            Text = i.GetText("text"),
+                                                                            Complete = "complete".Equals(i.GetText("status")),
+                                                                        };
+                                                         if (task.Complete)
+                                                         {
+                                                             task.FinishedDate = DateTime.Parse(i.GetText("finishTime"));
+                                                             task.FinishedBy = i.GetText("finishedBy/name");
+                                                         }
 
-                var tags = node.SelectNodes("tags/tag").Cast<XmlNode>()
-                            .Select(i => i.GetText("name")).ToList();
+                                                         return task;
+                                                     }));
 
-                stories.Add(new Story
-                {
-                    CreatedDate = DateTime.Parse(node.GetText("metrics/createTime")),
-                    Estimate = string.IsNullOrEmpty(node.GetText("size")) ? 0 : decimal.Parse(node.GetText("size")),
-                    Owner = node.GetText("owner/name"),
-                    Priority = string.IsNullOrEmpty(node.GetText("priority")) ? 0 : int.Parse(node.GetText("priority")),
-                    Text = node.GetText("text"),
-                    Link = string.Format("agilezen.com/project/{0}/story/{1}", ProjectId, storyId),
-                    ID = storyId,
-                    Tags = tags,
-                    Status = node.GetText("phase/name"),
-                    Comments = comments,
-                });
+                stories.Add(story);
             }
 
             return stories;

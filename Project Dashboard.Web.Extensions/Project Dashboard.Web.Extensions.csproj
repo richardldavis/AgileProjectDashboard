@@ -78,6 +78,9 @@
     <Compile Include="ActionResults\Pdf\PdfResult.cs" />
     <Compile Include="ActionResults\Pdf\EmbeddedStylesheetResolver.cs" />
     <Compile Include="ActionResults\Pdf\XsltExtensions\Common.cs" />
+    <Compile Include="Helpers\FileSystemHelper.cs" />
+    <Compile Include="Helpers\NetHelper.cs" />
+    <Compile Include="Helpers\RazorHelper.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

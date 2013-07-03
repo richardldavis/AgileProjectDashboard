@@ -1,4 +1,4 @@
-﻿@using ProjectDashboard.Domain
+﻿@using ProjectDashboard.Model.Stories
 @model IList<Story>
 
 <table>
@@ -14,7 +14,7 @@
     @foreach (var story in Model)
     {
         <tr>
-            <td>@story.ID</td>
+            <td>@story.Id</td>
             <td><a href="http://@story.Link">@story.Text</a></td>
             <td>@story.Priority</td>
             <td>@story.Status</td>

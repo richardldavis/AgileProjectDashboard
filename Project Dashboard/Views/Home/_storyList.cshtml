@@ -1,0 +1,50 @@
+﻿@model IList<Story>
+@using ProjectDashboard.Model.Stories
+@if (Model != null && Model.Any())
+{
+    <ul>
+        @foreach (var story in Model)
+        {
+            <li>
+                <h4>
+                    <a href="@story.Link">@story.Text</a>
+                </h4>
+                @if (story.Tags.Any())
+                {
+                    <p class="tags">@string.Join("; ", story.Tags)</p>
+                }
+                <p class="status">@story.Status</p>
+                <div class="description">@Html.Markdown(story.Details)</div>
+                @if (story.Tasks.Any())
+                {
+                    <h5>Tasks</h5>
+                    <ul>    
+                        @foreach (var task in story.Tasks)
+                        {
+                            <li>
+                                <span @RazorHelper.ClassAttribute("task" + (task.Complete ? " completeTask" : null))>@task.Text</span>
+                                @if (task.Complete)
+                                {
+                                    <text>by <em>@task.FinishedBy</em> at <time>@task.FinishedDate.Value.ToString("dd/MM/yyyy HH:mm")</time></text>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+                @if (story.Comments.Any())
+                {
+                    <h5>Comments</h5>
+                    <ul>    
+                        @foreach (var comment in story.Comments)
+                        {
+                            <li>
+                                <p>@comment.Text</p>
+                                <p><em>@comment.Who</em> at <time>@comment.Date.ToString("dd/MM/yyyy HH:mm")</time></p>
+                            </li>
+                        }
+                    </ul>
+                }
+            </li>
+        }
+    </ul>
+}
