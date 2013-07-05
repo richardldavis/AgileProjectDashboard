@@ -23,5 +23,9 @@
 else
 {
     <p>@Html.ActionLink("Download as PDF", "Stories", new { Layout = "pdf" })</p>
-    @Html.Partial("_storyList", Model.Stories)
+    @Html.Partial("_storyList", new ProjectDashboard.Models.StoryListModel
+                                    {
+                                        RootHeaderLevel = 4,
+                                        Stories = Model.Stories,
+                                    })
 }

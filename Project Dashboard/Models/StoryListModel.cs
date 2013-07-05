@@ -3,8 +3,10 @@
     using System.Collections.Generic;
     using Model.Stories;
 
-    public class StoriesModel
+    public class StoryListModel
     {
         public IList<Story> Stories { get; set; }
+
+        public int RootHeaderLevel { get; set; }
     }
 }

@@ -9,5 +9,9 @@
 }
 else
 {
-    @Html.Partial("_storyList", Model.Stories)
+    @Html.Partial("_storyList", new ProjectDashboard.Models.StoryListModel
+                                    {
+                                        RootHeaderLevel = 2,
+                                        Stories = Model.Stories,
+                                    })
 }

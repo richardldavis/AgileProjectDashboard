@@ -1,50 +1,78 @@
-﻿@model IList<Story>
+﻿@model ProjectDashboard.Models.StoryListModel
 @using ProjectDashboard.Model.Stories
-@if (Model != null && Model.Any())
+@{
+    var allTags = (Model.Stories??new List<Story>()).SelectMany(i => i.Tags).Distinct().ToList();
+}
+@if (allTags.Any())
 {
-    <ul>
-        @foreach (var story in Model)
+    <ul class="tags">
+        @foreach (var tag in allTags)
         {
             <li>
-                <h4>
-                    <a href="@story.Link">@story.Text</a>
-                </h4>
-                @if (story.Tags.Any())
-                {
-                    <p class="tags">@string.Join("; ", story.Tags)</p>
-                }
-                <p class="status">@story.Status</p>
-                <div class="description">@Html.Markdown(story.Details)</div>
-                @if (story.Tasks.Any())
-                {
-                    <h5>Tasks</h5>
-                    <ul>    
-                        @foreach (var task in story.Tasks)
-                        {
-                            <li>
-                                <span @RazorHelper.ClassAttribute("task" + (task.Complete ? " completeTask" : null))>@task.Text</span>
-                                @if (task.Complete)
-                                {
-                                    <text>by <em>@task.FinishedBy</em> at <time>@task.FinishedDate.Value.ToString("dd/MM/yyyy HH:mm")</time></text>
-                                }
-                            </li>
-                        }
-                    </ul>
-                }
-                @if (story.Comments.Any())
-                {
-                    <h5>Comments</h5>
-                    <ul>    
-                        @foreach (var comment in story.Comments)
-                        {
-                            <li>
-                                <p>@comment.Text</p>
-                                <p><em>@comment.Who</em> at <time>@comment.Date.ToString("dd/MM/yyyy HH:mm")</time></p>
-                            </li>
-                        }
-                    </ul>
-                }
+                @RazorHelper.OpenTag("h" + Model.RootHeaderLevel)
+                @tag.Capitalise()
+                @RazorHelper.CloseTag("h" + Model.RootHeaderLevel)
+                @ShowStories(Model.Stories.Where(i => i.Tags.Contains(tag)).ToList(), Model.RootHeaderLevel + 1, false)
             </li>
         }
     </ul>
+}
+else
+{
+    @ShowStories(Model.Stories, Model.RootHeaderLevel)
+}
+
+@helper ShowStories(IList<Story> stories, int headerLevel, bool showTags = true){
+    if (stories != null && stories.Any())
+    {
+        <ul class="stories">
+            @foreach (var story in stories)
+            {
+                <li>
+                    @RazorHelper.OpenTag("h" + headerLevel)
+                    <a href="@story.Link">@story.Text</a>
+                    @RazorHelper.CloseTag("h" + headerLevel)
+                    @if (showTags && story.Tags.Any())
+                    {
+                        <p class="tags">@string.Join("; ", story.Tags)</p>
+                    }
+                    <p class="status">@story.Status</p>
+                    <div class="description">@Html.Markdown(story.Details).RenumberHeadings(headerLevel + 1)</div>
+                    @if (story.Tasks.Any())
+                    {
+                        @RazorHelper.OpenTag("h" + (headerLevel + 1))
+                        @:Tasks
+                        @RazorHelper.CloseTag("h" + (headerLevel + 1))
+                        <ul class="tasks">    
+                            @foreach (var task in story.Tasks)
+                            {
+                                <li>
+                                    <span @RazorHelper.ClassAttribute("task" + (task.Complete ? " completeTask" : null))>@task.Text</span>
+                                    @if (task.Complete)
+                                    {
+                                        <text>by <em>@task.FinishedBy</em> at <time>@task.FinishedDate.Value.ToString("dd/MM/yyyy HH:mm")</time></text>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    }
+                    @if (story.Comments.Any())
+                    {
+                        @RazorHelper.OpenTag("h" + (headerLevel + 1))
+                        @:Comments
+                        @RazorHelper.CloseTag("h" + (headerLevel + 1))
+                        <ul class="comments">    
+                            @foreach (var comment in story.Comments)
+                            {
+                                <li>
+                                    <p>@comment.Text</p>
+                                    <p><em>@comment.Who</em> at <time>@comment.Date.ToString("dd/MM/yyyy HH:mm")</time></p>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    }
 }

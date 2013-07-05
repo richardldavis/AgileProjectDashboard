@@ -14,22 +14,24 @@
     xmlns:dash.common="urn:dash.common"
     exclude-result-prefixes="dash.common">
 
-    <xsl:param name="root-url" />
-    <xsl:param name="highlight-colour" />
-    <xsl:param name="link-colour">#0055b1</xsl:param>
-    <xsl:param name="header-left">Bupa</xsl:param>
-    <xsl:param name="header-right">www.bupa.com</xsl:param>
-    <xsl:param name="default-font-size">10</xsl:param>
-    <xsl:param name="p-spacing">2mm</xsl:param>
-    <xsl:param name="page-width">210</xsl:param>
-    <xsl:param name="include-images" select="boolean('false')" />
+  <xsl:param name="root-url" />
+  <xsl:param name="highlight-colour">#424297</xsl:param>
+  <xsl:param name="link-colour">#ee3d96</xsl:param>
+  <xsl:param name="header-left">Zone</xsl:param>
+  <xsl:param name="header-right">thisiszone.com</xsl:param>
+  <xsl:param name="default-font-size">8</xsl:param>
+  <xsl:param name="default-vertical-spacing-mm" select="$default-font-size * 0.125" />
+  <xsl:param name="default-list-indent-mm">5</xsl:param>
+  <xsl:param name="default-list-label-spacing-mm">5</xsl:param>
+  <xsl:param name="page-width">210</xsl:param>
+  <xsl:param name="include-images" select="boolean('false')" />
 
-    <xsl:template match="/">
-        <xsl:apply-templates select="html" />
-    </xsl:template>
+  <xsl:template match="/">
+    <xsl:apply-templates select="html" />
+  </xsl:template>
 
-    <xsl:template match="html">
-        <xsl:text disable-output-escaping="yes">
+  <xsl:template match="html">
+    <xsl:text disable-output-escaping="yes">
 &lt;!DOCTYPE fo:root [
   &lt;!ENTITY tilde  "&amp;#126;"&gt;
   &lt;!ENTITY florin "&amp;#131;"&gt;
@@ -147,186 +149,225 @@
   &lt;!ENTITY yuml   "&amp;#255;"&gt;
 ]&gt;
         </xsl:text>
-        <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
-            <fo:layout-master-set>
-                <fo:simple-page-master master-name="A4-portrait" page-height="29.7cm" page-width="{$page-width}mm" margin="2cm">
-                    <fo:region-body/>
-                </fo:simple-page-master>
-            </fo:layout-master-set>
-            <fo:page-sequence master-reference="A4-portrait">
-                <xsl:apply-templates />
-            </fo:page-sequence>
-        </fo:root>
-    </xsl:template>
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+      <fo:layout-master-set>
+        <fo:simple-page-master master-name="A4-portrait" page-height="29.7cm" page-width="{$page-width}mm" margin="2cm">
+          <fo:region-before region-name="before-A4-portrait" extent="1cm"/>
+          <fo:region-body margin-top="1.5cm" margin-bottom="1.5cm"/>
+          <fo:region-after region-name="after-A4-portrait" extent="1cm"/>
+        </fo:simple-page-master>
+      </fo:layout-master-set>
+      
+      <fo:page-sequence master-reference="A4-portrait">
+        <fo:static-content flow-name="before-A4-portrait">
+          <fo:block font-size="10pt" text-align-last="end">
+            <fo:table table-layout="fixed">
+              <fo:table-column column-width="396pt"/>
+              <fo:table-column column-width="72pt"/>
+              <fo:table-body>
+                <fo:table-row>
+                  <fo:table-cell>
+                    <fo:block text-align="start">
+                      <xsl:value-of select="$header-left" />
+                    </fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell>
+                    <fo:block text-align="end" font-weight="bold" font-family="monospace">
+                      <xsl:value-of select="$header-right" />
+                    </fo:block>
+                  </fo:table-cell>
+                </fo:table-row>
+              </fo:table-body>
+            </fo:table>
+          </fo:block>
+        </fo:static-content>
+        <fo:static-content flow-name="after-A4-portrait">
+          <fo:block font-size="10pt" text-align-last="end">
+            <fo:table table-layout="fixed">
+              <fo:table-column column-width="396pt"/>
+              <fo:table-column column-width="72pt"/>
+              <fo:table-body>
+                <fo:table-row>
+                  <fo:table-cell>
+                    <fo:block text-align="start">
+                      <xsl:value-of select="/html/head/title"/>
+                    </fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell>
+                    <fo:block text-align="end">
+                      Page
+                      <fo:page-number/>
+                      of
+                      <fo:page-number-citation ref-id="TheVeryLastPage"/>
+                    </fo:block>
+                  </fo:table-cell>
+                </fo:table-row>
+              </fo:table-body>
+            </fo:table>
+          </fo:block>
+        </fo:static-content>
+        
+        <xsl:apply-templates />
+      </fo:page-sequence>
+    </fo:root>
+  </xsl:template>
 
-    <xsl:template match="a[@href != '' and not(starts-with(@href, '#'))]">
-        <fo:basic-link color="{$link-colour}" external-destination="{dash.common:Urlify(@href, $root-url)}">
-            <xsl:apply-templates />
-        </fo:basic-link>
-    </xsl:template>
+  <xsl:template match="a[@href != '' and not(starts-with(@href, '#'))]">
+    <fo:basic-link color="{$link-colour}" external-destination="{dash.common:Urlify(@href, $root-url)}">
+      <xsl:apply-templates />
+    </fo:basic-link>
+  </xsl:template>
 
-    <xsl:template match="blockquote">
-        <fo:block font-size="{1.2 * $default-font-size}pt" space-before="5mm" space-after="5mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
+  <xsl:template match="blockquote">
+    <fo:block font-size="{1.2 * $default-font-size}pt" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
 
-    <xsl:template match="body">
-        <fo:flow flow-name="xsl-region-body">
-            <fo:block font-family="sans-serif" font-size="{$default-font-size}pt">
-                <xsl:apply-templates />
+  <xsl:template match="body">
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block font-family="sans-serif" font-size="{$default-font-size}pt">
+        <xsl:apply-templates />
 
-                <!-- ============================================
+        <!-- ============================================
                 We put an ID at the end of the document so we 
                 can do "Page x of y" numbering.
                 =============================================== -->
-                <fo:block id="TheVeryLastPage" font-size="0pt" line-height="0pt" space-after="0pt"/>
-            </fo:block>
-        </fo:flow>
-    </xsl:template>
+        <fo:block id="TheVeryLastPage" font-size="0pt" line-height="0pt" space-after="0pt"/>
+      </fo:block>
+    </fo:flow>
+  </xsl:template>
 
-    <xsl:template match="cite">
-        <fo:block font-size="10pt" space-before="2mm" space-after="2mm">
-            <xsl:apply-templates />
+  <xsl:template match="cite">
+    <fo:block font-size="10pt" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="h1">
+    <fo:block font-size="{1.4 * $default-font-size}pt" color="{$highlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="h2">
+    <fo:block font-size="{1.2 * $default-font-size}pt" color="{$highlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="h3">
+    <fo:block font-size="{1.15 * $default-font-size}pt" color="{$highlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="h4">
+    <fo:block font-size="{1.1 * $default-font-size}pt" color="{$highlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="h5">
+    <fo:block font-size="{1.05 * $default-font-size}pt" color="{$highlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="h6">
+    <fo:block font-size="{1.0 * $default-font-size}pt" color="{$highlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="iframe[@src != '']">
+    <xsl:variable name="border-width">0.2mm</xsl:variable>
+    <xsl:variable name="border-colour">#e4e4e4</xsl:variable>
+    <xsl:variable name="border-style">solid</xsl:variable>
+    <fo:block font-size="{0.8 * $default-font-size}pt" border-left-width="{$border-width}" border-right-width="{$border-width}" border-top-width="{$border-width}" border-bottom-width="{$border-width}" border-left-color="{$border-colour}" border-right-color="{$border-colour}" border-top-color="{$border-colour}" border-bottom-color="{$border-colour}" border-left-style="{$border-style}" border-right-style="{$border-style}" border-top-style="{$border-style}" border-bottom-style="{$border-style}"
+              padding-top="2mm" padding-bottom="2mm" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <fo:inline padding-left="2mm" padding-right="2mm">
+        <fo:basic-link color="{$link-colour}" external-destination="{@src}">
+          <xsl:value-of select="@src" />
+        </fo:basic-link>
+      </fo:inline>
+    </fo:block>
+  </xsl:template>
+
+  <xsl:template match="img">
+    <xsl:choose>
+      <xsl:when test="$include-images">
+        <fo:block space-after="2mm">
+          <fo:external-graphic src="{dash.common:Urlify(@src, $root-url)}">
+            <xsl:if test="@width">
+              <xsl:attribute name="width">
+                <xsl:choose>
+                  <xsl:when test="contains(@width, 'px')">
+                    <xsl:value-of select="@width"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="concat(@width, 'px')"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@height">
+              <xsl:attribute name="height">
+                <xsl:choose>
+                  <xsl:when test="contains(@height, 'px')">
+                    <xsl:value-of select="@height"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="concat(@height, 'px')"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:attribute>
+            </xsl:if>
+          </fo:external-graphic>
         </fo:block>
-    </xsl:template>
-
-    <xsl:template match="h1">
-        <fo:block font-size="{1.4 * $default-font-size}pt" color="{$highlight-colour}" space-before="5mm" space-after="5mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="h2">
-        <fo:block font-size="{1.2 * $default-font-size}pt" color="{$highlight-colour}" space-before="5mm" space-after="5mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="h3">
-        <fo:block font-size="{1.15 * $default-font-size}pt" color="{$highlight-colour}" space-before="5mm" space-after="5mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="h4">
-        <fo:block font-size="{1.1 * $default-font-size}pt" color="{$highlight-colour}" space-before="5mm" space-after="5mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="h5">
-        <fo:block font-size="{1.05 * $default-font-size}pt" color="{$highlight-colour}" space-before="5mm" space-after="5mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="h6">
-        <fo:block font-size="{1.0 * $default-font-size}pt" color="{$highlight-colour}" space-before="5mm" space-after="5mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="iframe[@src != '']">
+      </xsl:when>
+      <xsl:otherwise>
         <xsl:variable name="border-width">0.2mm</xsl:variable>
         <xsl:variable name="border-colour">#e4e4e4</xsl:variable>
         <xsl:variable name="border-style">solid</xsl:variable>
         <fo:block font-size="{0.8 * $default-font-size}pt" border-left-width="{$border-width}" border-right-width="{$border-width}" border-top-width="{$border-width}" border-bottom-width="{$border-width}" border-left-color="{$border-colour}" border-right-color="{$border-colour}" border-top-color="{$border-colour}" border-bottom-color="{$border-colour}" border-left-style="{$border-style}" border-right-style="{$border-style}" border-top-style="{$border-style}" border-bottom-style="{$border-style}"
                   padding-top="2mm" padding-bottom="2mm" space-before="2mm" space-after="2mm">
-            <fo:inline padding-left="2mm" padding-right="2mm">
-                <fo:basic-link color="{$link-colour}" external-destination="{@src}">
-                    <xsl:value-of select="@src" />
-                </fo:basic-link>
-            </fo:inline>
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="img">
-        <xsl:choose>
-            <xsl:when test="$include-images">
-                <fo:block space-after="2mm">
-                    <fo:external-graphic src="{dash.common:Urlify(@src, $root-url)}">
-                        <xsl:if test="@width">
-                            <xsl:attribute name="width">
-                                <xsl:choose>
-                                    <xsl:when test="contains(@width, 'px')">
-                                        <xsl:value-of select="@width"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="concat(@width, 'px')"/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:attribute>
-                        </xsl:if>
-                        <xsl:if test="@height">
-                            <xsl:attribute name="height">
-                                <xsl:choose>
-                                    <xsl:when test="contains(@height, 'px')">
-                                        <xsl:value-of select="@height"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="concat(@height, 'px')"/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:attribute>
-                        </xsl:if>
-                    </fo:external-graphic>
-                </fo:block>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:variable name="border-width">0.2mm</xsl:variable>
-                <xsl:variable name="border-colour">#e4e4e4</xsl:variable>
-                <xsl:variable name="border-style">solid</xsl:variable>
-                <fo:block font-size="{0.8 * $default-font-size}pt" border-left-width="{$border-width}" border-right-width="{$border-width}" border-top-width="{$border-width}" border-bottom-width="{$border-width}" border-left-color="{$border-colour}" border-right-color="{$border-colour}" border-top-color="{$border-colour}" border-bottom-color="{$border-colour}" border-left-style="{$border-style}" border-right-style="{$border-style}" border-top-style="{$border-style}" border-bottom-style="{$border-style}"
-                          padding-top="2mm" padding-bottom="2mm" space-before="2mm" space-after="2mm">
-                    <fo:inline padding-left="2mm" padding-right="2mm">
-                        <fo:basic-link color="{$link-colour}" external-destination="{dash.common:Urlify(@src, $root-url)}">
-                            Image:
-                            <xsl:choose>
-                                <xsl:when test="@alt != ''">
-                                    <xsl:value-of select="@alt" />
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:value-of select="dash.common:Urlify(@src, $root-url)" />
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </fo:basic-link>
-                    </fo:inline>
-                </fo:block>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
-    
-    <xsl:template match="ol|ul">
-        <xsl:variable name="v-space">
-            <xsl:choose>
-                <xsl:when test="ancestor::ul or ancestor::ol">
-                    <xsl:text>0mm</xsl:text>
+          <fo:inline padding-left="2mm" padding-right="2mm">
+            <fo:basic-link color="{$link-colour}" external-destination="{dash.common:Urlify(@src, $root-url)}">
+              Image:
+              <xsl:choose>
+                <xsl:when test="@alt != ''">
+                  <xsl:value-of select="@alt" />
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="$p-spacing" />
+                  <xsl:value-of select="dash.common:Urlify(@src, $root-url)" />
                 </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <fo:list-block provisional-distance-between-starts="1cm" provisional-label-separation="0.5cm" space-before="{$v-space}" space-after="{$v-space}">
-            <xsl:attribute name="start-indent">
-                <xsl:variable name="ancestors">
-                    <xsl:choose>
-                        <xsl:when test="count(ancestor::ol) or count(ancestor::ul)">
-                            <xsl:value-of select="1 + (count(ancestor::ol) + count(ancestor::ul)) * 1.25"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:text>1</xsl:text>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:variable>
-                <xsl:value-of select="concat($ancestors, 'cm')"/>
-            </xsl:attribute>
-            <xsl:apply-templates select="*" />
-        </fo:list-block>
-    </xsl:template>
+              </xsl:choose>
+            </fo:basic-link>
+          </fo:inline>
+        </fo:block>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
-    <!-- ============================================
+  <xsl:template match="ol|ul">
+    <xsl:variable name="vertical-spacing-mm">
+      <xsl:choose>
+        <xsl:when test="ancestor::ul or ancestor::ol">
+          <xsl:text>0</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$default-vertical-spacing-mm" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <fo:list-block provisional-distance-between-starts="{$default-list-label-spacing-mm}mm" provisional-label-separation="0mm" space-before="{$vertical-spacing-mm}mm" space-after="{$vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:list-block>
+  </xsl:template>
+
+  <!-- ============================================
     When we handle items in an ordered list, we need
     to check if the list has a start attribute.  If
     it does, we change the starting number accordingly.
@@ -335,72 +376,72 @@
     the numbers should use.  
     =============================================== -->
 
-    <xsl:template match="ol/li">
-        <fo:list-item>
-            <fo:list-item-label end-indent="label-end()">
-                <fo:block>
-                    <xsl:variable name="value-attr">
-                        <xsl:choose>
-                            <xsl:when test="../@start">
-                                <xsl:number value="position() + ../@start - 1"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:number value="position()"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:variable>
-                    <xsl:choose>
-                        <xsl:when test="../@type='i'">
-                            <xsl:number value="$value-attr" format="i. "/>
-                        </xsl:when>
-                        <xsl:when test="../@type='I'">
-                            <xsl:number value="$value-attr" format="I. "/>
-                        </xsl:when>
-                        <xsl:when test="../@type='a'">
-                            <xsl:number value="$value-attr" format="a. "/>
-                        </xsl:when>
-                        <xsl:when test="../@type='A'">
-                            <xsl:number value="$value-attr" format="A. "/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:number value="$value-attr" format="1. "/>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </fo:block>
-            </fo:list-item-label>
-            <fo:list-item-body start-indent="body-start()">
-                <fo:block>
-                    <xsl:apply-templates />
-                </fo:block>
-            </fo:list-item-body>
-        </fo:list-item>
-    </xsl:template>
-
-    <xsl:template match="p">
-        <fo:block space-before="{$p-spacing}" space-after="{$p-spacing}">
-            <xsl:apply-templates />
+  <xsl:template match="ol/li">
+    <fo:list-item>
+      <fo:list-item-label end-indent="label-end()">
+        <fo:block>
+          <xsl:variable name="value-attr">
+            <xsl:choose>
+              <xsl:when test="../@start">
+                <xsl:number value="position() + ../@start - 1"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:number value="position()"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="../@type='i'">
+              <xsl:number value="$value-attr" format="i. "/>
+            </xsl:when>
+            <xsl:when test="../@type='I'">
+              <xsl:number value="$value-attr" format="I. "/>
+            </xsl:when>
+            <xsl:when test="../@type='a'">
+              <xsl:number value="$value-attr" format="a. "/>
+            </xsl:when>
+            <xsl:when test="../@type='A'">
+              <xsl:number value="$value-attr" format="A. "/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:number value="$value-attr" format="1. "/>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:block>
-    </xsl:template>
+      </fo:list-item-label>
+      <fo:list-item-body start-indent="body-start()">
+        <fo:block>
+          <xsl:apply-templates />
+        </fo:block>
+      </fo:list-item-body>
+    </fo:list-item>
+  </xsl:template>
 
-    <xsl:template match="strong">
-        <fo:inline font-weight="bold">
-            <xsl:apply-templates select="*|text()"/>
-        </fo:inline>
-    </xsl:template>
-    
-    <xsl:template match="sub">
-        <fo:inline vertical-align="sub" font-size="75%">
-            <xsl:apply-templates />
-        </fo:inline>
-    </xsl:template>
+  <xsl:template match="p">
+    <fo:block space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
 
-    <xsl:template match="sup">
-        <fo:inline vertical-align="super" font-size="75%">
-            <xsl:apply-templates />
-        </fo:inline>
-    </xsl:template>
-    
-    <!-- ============================================
+  <xsl:template match="strong">
+    <fo:inline font-weight="bold">
+      <xsl:apply-templates select="*|text()"/>
+    </fo:inline>
+  </xsl:template>
+
+  <xsl:template match="sub">
+    <fo:inline vertical-align="sub" font-size="75%">
+      <xsl:apply-templates />
+    </fo:inline>
+  </xsl:template>
+
+  <xsl:template match="sup">
+    <fo:inline vertical-align="super" font-size="75%">
+      <xsl:apply-templates />
+    </fo:inline>
+  </xsl:template>
+
+  <!-- ============================================
     Tables are a hassle.  The main problem we have
     is converting the cols attribute into some 
     number of <fo:table-column> elements.  We do 
@@ -409,29 +450,27 @@
     invoke all of the templates for the children 
     of this element. 
     =============================================== -->
-    <xsl:template match="table">
-        <fo:table table-layout="fixed" space-before="{$p-spacing}" space-after="{$p-spacing}">
-            <xsl:choose>
-                <xsl:when test="@cols">
-                    <xsl:call-template name="build-columns">
-                        <xsl:with-param name="cols" select="concat(@cols, ' ')" />
-                    </xsl:call-template>
-                </xsl:when>
-                <xsl:otherwise>
-                    <!--<xsl:variable name="width" select="$page-width div count(tr[1]/th|tr[1]/td)" />-->
-                    <xsl:for-each select="tr[1]/th|tr[1]/td">
-                        <!--<fo:table-column column-width="{$width}mm"/>-->
-                        <fo:table-column />
-                    </xsl:for-each>
-                </xsl:otherwise>
-            </xsl:choose>
-            <fo:table-body>
-                <xsl:apply-templates />
-            </fo:table-body>
-        </fo:table>
-    </xsl:template>
+  <xsl:template match="table">
+    <fo:table table-layout="fixed" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:choose>
+        <xsl:when test="@cols">
+          <xsl:call-template name="build-columns">
+            <xsl:with-param name="cols" select="concat(@cols, ' ')" />
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="tr[1]/th|tr[1]/td">
+            <fo:table-column />
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
+      <fo:table-body>
+        <xsl:apply-templates />
+      </fo:table-body>
+    </fo:table>
+  </xsl:template>
 
-    <!-- ============================================
+  <!-- ============================================
     For a table cell, we put everything inside a
     <fo:table-cell> element.  We set the padding
     property correctly, then we set the border 
@@ -444,288 +483,202 @@
     element or we find something that specifies the 
     alignment. 
     =============================================== -->
-    <xsl:template match="td">
-        <fo:table-cell
-          padding-start="3pt" padding-end="3pt"
-          padding-before="3pt" padding-after="3pt">
-            <xsl:if test="@colspan">
-                <xsl:attribute name="number-columns-spanned">
-                    <xsl:value-of select="@colspan"/>
-                </xsl:attribute>
-            </xsl:if>
-            <xsl:if test="@rowspan">
-                <xsl:attribute name="number-rows-spanned">
-                    <xsl:value-of select="@rowspan"/>
-                </xsl:attribute>
-            </xsl:if>
-            <xsl:if test="@border='1' or 
+  <xsl:template match="td">
+    <fo:table-cell
+      padding-start="3pt" padding-end="3pt"
+      padding-before="3pt" padding-after="3pt">
+      <xsl:if test="@colspan">
+        <xsl:attribute name="number-columns-spanned">
+          <xsl:value-of select="@colspan"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@rowspan">
+        <xsl:attribute name="number-rows-spanned">
+          <xsl:value-of select="@rowspan"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@border='1' or 
                     ancestor::tr[@border='1'] or
                     ancestor::thead[@border='1'] or
                     ancestor::table[@border='1']">
-                <xsl:attribute name="border-style">
-                    <xsl:text>solid</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="border-color">
-                    <xsl:text>black</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="border-width">
-                    <xsl:text>1pt</xsl:text>
-                </xsl:attribute>
-            </xsl:if>
-            <xsl:variable name="align">
-                <xsl:choose>
-                    <xsl:when test="@align">
-                        <xsl:choose>
-                            <xsl:when test="@align='center'">
-                                <xsl:text>center</xsl:text>
-                            </xsl:when>
-                            <xsl:when test="@align='right'">
-                                <xsl:text>end</xsl:text>
-                            </xsl:when>
-                            <xsl:when test="@align='justify'">
-                                <xsl:text>justify</xsl:text>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:text>start</xsl:text>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:when>
-                    <xsl:when test="ancestor::tr[@align]">
-                        <xsl:choose>
-                            <xsl:when test="ancestor::tr/@align='center'">
-                                <xsl:text>center</xsl:text>
-                            </xsl:when>
-                            <xsl:when test="ancestor::tr/@align='right'">
-                                <xsl:text>end</xsl:text>
-                            </xsl:when>
-                            <xsl:when test="ancestor::tr/@align='justify'">
-                                <xsl:text>justify</xsl:text>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:text>start</xsl:text>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:when>
-                    <xsl:when test="ancestor::thead">
-                        <xsl:text>center</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="ancestor::table[@align]">
-                        <xsl:choose>
-                            <xsl:when test="ancestor::table/@align='center'">
-                                <xsl:text>center</xsl:text>
-                            </xsl:when>
-                            <xsl:when test="ancestor::table/@align='right'">
-                                <xsl:text>end</xsl:text>
-                            </xsl:when>
-                            <xsl:when test="ancestor::table/@align='justify'">
-                                <xsl:text>justify</xsl:text>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:text>start</xsl:text>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>start</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
-            <fo:block text-align="{$align}">
-                <xsl:apply-templates />
-            </fo:block>
-        </fo:table-cell>
-    </xsl:template>
+        <xsl:attribute name="border-style">
+          <xsl:text>solid</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute name="border-color">
+          <xsl:text>black</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute name="border-width">
+          <xsl:text>1pt</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:variable name="align">
+        <xsl:choose>
+          <xsl:when test="@align">
+            <xsl:choose>
+              <xsl:when test="@align='center'">
+                <xsl:text>center</xsl:text>
+              </xsl:when>
+              <xsl:when test="@align='right'">
+                <xsl:text>end</xsl:text>
+              </xsl:when>
+              <xsl:when test="@align='justify'">
+                <xsl:text>justify</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>start</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:when test="ancestor::tr[@align]">
+            <xsl:choose>
+              <xsl:when test="ancestor::tr/@align='center'">
+                <xsl:text>center</xsl:text>
+              </xsl:when>
+              <xsl:when test="ancestor::tr/@align='right'">
+                <xsl:text>end</xsl:text>
+              </xsl:when>
+              <xsl:when test="ancestor::tr/@align='justify'">
+                <xsl:text>justify</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>start</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:when test="ancestor::thead">
+            <xsl:text>center</xsl:text>
+          </xsl:when>
+          <xsl:when test="ancestor::table[@align]">
+            <xsl:choose>
+              <xsl:when test="ancestor::table/@align='center'">
+                <xsl:text>center</xsl:text>
+              </xsl:when>
+              <xsl:when test="ancestor::table/@align='right'">
+                <xsl:text>end</xsl:text>
+              </xsl:when>
+              <xsl:when test="ancestor::table/@align='justify'">
+                <xsl:text>justify</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>start</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>start</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <fo:block text-align="{$align}">
+        <xsl:apply-templates />
+      </fo:block>
+    </fo:table-cell>
+  </xsl:template>
 
-    <!-- ============================================
+  <!-- ============================================
     The rarely-used <tfoot> element contains some
     number of <tr> elements; we just invoke the 
     template for <tr> here. 
     =============================================== -->
-    <xsl:template match="tfoot">
-        <xsl:apply-templates select="tr"/>
-    </xsl:template>
+  <xsl:template match="tfoot">
+    <xsl:apply-templates select="tr"/>
+  </xsl:template>
 
-    <!-- ============================================
+  <!-- ============================================
     If there's a <th> element, we process it just 
     like a normal <td>, except the font-weight is 
     always bold and the text-align is always center. 
     =============================================== -->
-    <xsl:template match="th">
-        <fo:table-cell
-          padding-start="3pt" padding-end="3pt"
-          padding-before="3pt" padding-after="3pt">
-            <xsl:if test="@border='1' or 
+  <xsl:template match="th">
+    <fo:table-cell
+      padding-start="3pt" padding-end="3pt"
+      padding-before="3pt" padding-after="3pt">
+      <xsl:if test="@border='1' or 
                     ancestor::tr[@border='1'] or
                     ancestor::table[@border='1']">
-                <xsl:attribute name="border-style">
-                    <xsl:text>solid</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="border-color">
-                    <xsl:text>black</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="border-width">
-                    <xsl:text>1pt</xsl:text>
-                </xsl:attribute>
-            </xsl:if>
-            <fo:block font-weight="bold" text-align="center">
-                <xsl:apply-templates />
-            </fo:block>
-        </fo:table-cell>
-    </xsl:template>
+        <xsl:attribute name="border-style">
+          <xsl:text>solid</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute name="border-color">
+          <xsl:text>black</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute name="border-width">
+          <xsl:text>1pt</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
+      <fo:block font-weight="bold" text-align="center">
+        <xsl:apply-templates />
+      </fo:block>
+    </fo:table-cell>
+  </xsl:template>
 
-    <!-- ============================================
+  <!-- ============================================
     Just like <tfoot>, the rarely-used <thead> element
     contains some number of table rows.  We just 
     invoke the template for <tr> here. 
     =============================================== -->
-    <xsl:template match="thead">
-        <xsl:apply-templates select="tr"/>
-    </xsl:template>
+  <xsl:template match="thead">
+    <xsl:apply-templates select="tr"/>
+  </xsl:template>
 
-    <!-- ============================================
+  <!-- ============================================
     For an HTML table row, we create an XSL-FO table
     row, then invoke the templates for everything 
     inside it. 
     =============================================== -->
-    <xsl:template match="tr">
-        <fo:table-row>
-            <xsl:apply-templates />
-        </fo:table-row>
-    </xsl:template>
+  <xsl:template match="tr">
+    <fo:table-row>
+      <xsl:apply-templates />
+    </fo:table-row>
+  </xsl:template>
 
-    <xsl:template match="ul/li">
-        <fo:list-item>
-            <fo:list-item-label end-indent="label-end()">
-                <fo:block>&#x2022;</fo:block>
-            </fo:list-item-label>
-            <fo:list-item-body start-indent="body-start()">
-                <fo:block>
-                    <xsl:apply-templates />
-                </fo:block>
-            </fo:list-item-body>
-        </fo:list-item>
-    </xsl:template>
-    
-    <!-- ============================================
+  <xsl:template match="ul/li">
+    <fo:list-item>
+      <fo:list-item-label end-indent="label-end()">
+        <!--<fo:block>&#x2022;</fo:block>-->
+        <fo:block>-</fo:block>
+      </fo:list-item-label>
+      <fo:list-item-body start-indent="body-start()">
+        <fo:block>
+          <xsl:apply-templates />
+        </fo:block>
+      </fo:list-item-body>
+    </fo:list-item>
+  </xsl:template>
+
+  <!-- ============================================
     This template generates an <fo:table-column>
     element for each token in the cols attribute of
     the HTML <table> tag.  The template processes
     the first token, then invokes itself with the 
     rest of the string. 
     =============================================== -->
-    <xsl:template name="build-columns">
-        <xsl:param name="cols"/>
+  <xsl:template name="build-columns">
+    <xsl:param name="cols"/>
 
-        <xsl:if test="string-length(normalize-space($cols))">
-            <xsl:variable name="next-col">
-                <xsl:value-of select="substring-before($cols, ' ')"/>
-            </xsl:variable>
-            <xsl:variable name="remaining-cols">
-                <xsl:value-of select="substring-after($cols, ' ')"/>
-            </xsl:variable>
-            <xsl:choose>
-                <xsl:when test="contains($next-col, 'pt')">
-                    <fo:table-column column-width="{$next-col}"/>
-                </xsl:when>
-                <xsl:when test="number($next-col) &gt; 0">
-                    <fo:table-column column-width="{concat($next-col, 'pt')}"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <fo:table-column column-width="50pt"/>
-                </xsl:otherwise>
-            </xsl:choose>
+    <xsl:if test="string-length(normalize-space($cols))">
+      <xsl:variable name="next-col">
+        <xsl:value-of select="substring-before($cols, ' ')"/>
+      </xsl:variable>
+      <xsl:variable name="remaining-cols">
+        <xsl:value-of select="substring-after($cols, ' ')"/>
+      </xsl:variable>
+      <xsl:choose>
+        <xsl:when test="contains($next-col, 'pt')">
+          <fo:table-column column-width="{$next-col}"/>
+        </xsl:when>
+        <xsl:when test="number($next-col) &gt; 0">
+          <fo:table-column column-width="{concat($next-col, 'pt')}"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <fo:table-column column-width="50pt"/>
+        </xsl:otherwise>
+      </xsl:choose>
 
-            <xsl:call-template name="build-columns">
-                <xsl:with-param name="cols" select="concat($remaining-cols, ' ')"/>
-            </xsl:call-template>
-        </xsl:if>
-    </xsl:template>
-
-
-    <!-- ============================================
-    Bupa-specific below here.
-    =============================================== -->
-    
-    <xsl:template match="div[@id='related-links' or @id='downloads']">
-        <xsl:variable name="border-width">2mm</xsl:variable>
-        <xsl:variable name="border-colour" select="$highlight-colour" />
-        <xsl:variable name="border-style">solid</xsl:variable>
-        <fo:block keep-together="always" background-color="white"
-                  border-left-width="{$border-width}" border-right-width="{$border-width}" border-top-width="{$border-width}" border-bottom-width="{$border-width}" border-left-color="{$border-colour}" border-right-color="{$border-colour}" border-top-color="{$border-colour}" border-bottom-color="{$border-colour}" border-left-style="{$border-style}" border-right-style="{$border-style}" border-top-style="{$border-style}" border-bottom-style="{$border-style}"
-                  margin-left="0mm" margin-right="0mm" space-before="{$p-spacing}" space-after="{$p-spacing}" padding-left="5mm" padding-right="5mm" padding-top="2mm" padding-bottom="2mm">
-            <xsl:apply-templates />
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="aside[@class='carousel']">
-        <xsl:variable name="border-width">0mm</xsl:variable>
-        <xsl:variable name="border-colour" select="$highlight-colour" />
-        <xsl:variable name="border-style">solid</xsl:variable>
-        <fo:block background-color="#e6e6e6"
-                  border-left-width="{$border-width}" border-right-width="{$border-width}" border-top-width="{$border-width}" border-bottom-width="{$border-width}" border-left-color="{$border-colour}" border-right-color="{$border-colour}" border-top-color="{$border-colour}" border-bottom-color="{$border-colour}" border-left-style="{$border-style}" border-right-style="{$border-style}" border-top-style="{$border-style}" border-bottom-style="{$border-style}"
-                  margin-left="0mm" margin-right="0mm" space-before="{$p-spacing}" space-after="{$p-spacing}" padding-left="5mm" padding-right="5mm" padding-top="2mm" padding-bottom="2mm">
-            <fo:block font-size="{1.2 * $default-font-size}pt" color="{$highlight-colour}">
-                <xsl:value-of select=".//h2" />
-            </fo:block>
-            <fo:block background-color="white" padding-start="2mm" padding-end="2mm" padding-before="2mm" padding-after="2mm">
-                <xsl:for-each select=".//li">
-                    <xsl:variable name="href" select="div[@class='copy']//a/@href" />
-                    <fo:table table-layout="fixed">
-                        <fo:table-column/>
-                        <fo:table-column/>
-                        <fo:table-body>
-                            <fo:table-row>
-                                <fo:table-cell>
-                                    <fo:block>
-                                        <fo:basic-link color="{$link-colour}" external-destination="{dash.common:Urlify($href, $root-url)}">
-                                            <xsl:apply-templates select=".//div[@class='imgHolder']//img" />
-                                        </fo:basic-link>
-                                    </fo:block>
-                                </fo:table-cell>
-                                <fo:table-cell>
-                                    <fo:block>
-                                        <fo:basic-link color="{$link-colour}" external-destination="{dash.common:Urlify($href, $root-url)}">
-                                            <xsl:value-of select=".//h3" />
-                                        </fo:basic-link>
-                                    </fo:block>
-                                </fo:table-cell>
-                            </fo:table-row>
-                        </fo:table-body>
-                    </fo:table>
-                </xsl:for-each>
-            </fo:block>
-        </fo:block>
-    </xsl:template>
-
-    <xsl:template match="aside[@class='image-gallery']">
-        <xsl:variable name="border-width">0mm</xsl:variable>
-        <xsl:variable name="border-colour" select="$highlight-colour" />
-        <xsl:variable name="border-style">solid</xsl:variable>
-        <fo:block background-color="#e6e6e6"
-                  border-left-width="{$border-width}" border-right-width="{$border-width}" border-top-width="{$border-width}" border-bottom-width="{$border-width}" border-left-color="{$border-colour}" border-right-color="{$border-colour}" border-top-color="{$border-colour}" border-bottom-color="{$border-colour}" border-left-style="{$border-style}" border-right-style="{$border-style}" border-top-style="{$border-style}" border-bottom-style="{$border-style}"
-                  margin-left="0mm" margin-right="0mm" space-before="{$p-spacing}" space-after="{$p-spacing}" padding-left="5mm" padding-right="5mm" padding-top="2mm" padding-bottom="2mm">
-            <fo:table table-layout="fixed">
-                <fo:table-column/>
-                <fo:table-column/>
-                <fo:table-column/>
-                <fo:table-body>
-                    <fo:table-row>
-                        <xsl:for-each select=".//a[@rel='gallery']">
-                            <xsl:if test="position() mod 3 = 1 and position() != 1">
-                                <xsl:text disable-output-escaping="yes"><![CDATA[</fo:table-row><fo:table-row>]]></xsl:text>
-                            </xsl:if>
-                            <fo:table-cell>
-                                <fo:block background-color="white" padding-start="2mm" padding-end="2mm" padding-before="2mm" padding-after="2mm">
-                                    <fo:basic-link color="{$link-colour}" external-destination="{dash.common:Urlify(@href, $root-url)}">
-                                        <xsl:apply-templates />
-                                    </fo:basic-link>
-                                </fo:block>
-                            </fo:table-cell>
-                        </xsl:for-each>
-                    </fo:table-row>
-                </fo:table-body>
-            </fo:table>
-        </fo:block>
-    </xsl:template>
+      <xsl:call-template name="build-columns">
+        <xsl:with-param name="cols" select="concat($remaining-cols, ' ')"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
 
 </xsl:stylesheet>

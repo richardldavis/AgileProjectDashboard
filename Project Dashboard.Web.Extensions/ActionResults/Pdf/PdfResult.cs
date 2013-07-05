@@ -7,6 +7,7 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
     using System.Diagnostics;
     using System.IO;
     using System.Text;
+    using System.Web;
     using System.Web.Mvc;
     using System.Xml;
     using System.Xml.Xsl;
@@ -45,8 +46,8 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
             }
 
             var fopPath = context.HttpContext.Server.MapPath("~/bin/fop/Fop.exe");
-            var fo = GenerateFo(HtmlContent);
-            var pdf = GeneratePdf(fo, fopPath, context);
+            var fo = GenerateFo(HtmlContent, context.RequestContext.HttpContext);
+            var pdf = GeneratePdf(fo, fopPath, context.RequestContext.HttpContext);
 
             var response = context.HttpContext.Response;
             response.ContentType = "application/pdf";
@@ -58,13 +59,13 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
 
         #region Helpers
 
-        private static byte[] GenerateFo(string htmlContent)
+        private static byte[] GenerateFo(string htmlContent, HttpContextBase context)
         {
             var pageReader = new StringReader(htmlContent);
             var htmlReader = XmlReader.Create(pageReader, new XmlReaderSettings{DtdProcessing = DtdProcessing.Parse});
 
             var xsl = new XmlDocument();
-            using (var xslReader = XmlReader.Create(GetXsltStreamFromResources("xslfo-article"), new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore }))
+            using (var xslReader = XmlReader.Create(GetXsltStreamFromResources("xslfo-stories"), new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore }))
             {
                 xsl.Load(xslReader);
             }
@@ -79,9 +80,7 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
 
             var arguments = new XsltArgumentList();
             arguments.AddExtensionObject("urn:dash.common", new XsltExtensions.Common());
-            arguments.AddParam("root-url", string.Empty, "http://www.bupa.com/");
-            arguments.AddParam("highlight-colour", string.Empty, "#cccccc");
-            arguments.AddParam("include-images", string.Empty, false);
+            arguments.AddParam("root-url", string.Empty, string.Format("{0}://{1}/", context.Request.Url.Scheme, context.Request.Url.Authority));
 
             try
             {
@@ -97,9 +96,9 @@ namespace Zone.Library.Mvc.ActionResults.Pdf
             return Encoding.Default.GetBytes(fo);
         }
 
-        private static byte[] GeneratePdf(byte[] fo, string fopPath, ControllerContext context)
+        private static byte[] GeneratePdf(byte[] fo, string fopPath, HttpContextBase context)
         {
-            var tempFoPath = context.RequestContext.HttpContext.Server.MapPath("~/App_Data/TEMP/fo.fo");
+            var tempFoPath = context.Server.MapPath("~/App_Data/TEMP/fo.fo");
             FileSystemHelper.SaveAsFile(tempFoPath, fo);
             var compiler = new Process
                                {

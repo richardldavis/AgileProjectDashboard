@@ -84,7 +84,7 @@
                                     Status = node.GetText("phase/name"),
                                     Estimate = string.IsNullOrEmpty(node.GetText("size")) ? 0 : decimal.Parse(node.GetText("size")),
                                     Owner = node.GetText("owner/name"),
-                                    Link = string.Format("agilezen.com/project/{0}/story/{1}", ProjectId, node.GetText("id")),
+                                    Link = string.Format("https://agilezen.com/project/{0}/story/{1}", ProjectId, node.GetText("id")),
                                 };
                 story.Comments.AddRange(node.SelectNodes("comments/comment").Cast<XmlNode>()
                                             .Select(i => new Comment
