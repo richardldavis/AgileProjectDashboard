@@ -9,10 +9,10 @@
             <td>Actual</td>
     </tr>
     
-    @foreach (ProjectDashboard.Domain.Story story in Model.LatestStories)
+    @foreach (ProjectDashboard.Model.Stories.Story story in Model.LatestStories)
     {
         <tr>
-            <td>@story.ID</td>
+            <td>@story.Id</td>
             <td><a href="http://@story.Link">@story.Text</a></td>
             <td>@story.Priority</td>
             <td>@story.Status</td>
