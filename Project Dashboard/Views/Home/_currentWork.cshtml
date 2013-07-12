@@ -9,7 +9,7 @@
             </td>
     </tr>
     
-    @foreach (ProjectDashboard.Domain.Story story in Model.StoriesBeingWorkedOn)
+    @foreach (ProjectDashboard.Model.Stories.Story story in Model.StoriesBeingWorkedOn)
     {
         var actualId = "actual" + story.ID;
         
