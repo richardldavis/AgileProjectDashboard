@@ -9,6 +9,7 @@
     using System.Xml;
     using Model.Stories;
     using Helpers;
+    using System.Web.Script.Serialization;
 
     public class AgileZenStoryRepository : AgileZenBase, IStoryRepository
     {
@@ -118,6 +119,35 @@
             }
 
             return stories;
+        }
+
+        public void ReplaceTextInDetails(string oldValue, string newValue)
+        {
+            foreach (XmlNode node in GetStoriesAsXml())
+            {
+                var details = node.GetText("details");
+                if (!details.Contains(oldValue))
+                {
+                    continue;
+                }
+
+                var id = int.Parse(node.GetText("id"));
+
+                var updateData = new { details = details.Replace(oldValue, newValue) };
+                var serializer = new JavaScriptSerializer();
+                var data = Encoding.ASCII.GetBytes(serializer.Serialize(updateData));
+
+                var request = (HttpWebRequest)WebRequest.Create(string.Format("{0}projects/{1}/stories/{2}/?apikey={3}", ApiRootUrl, ProjectId, id, ApiKey));
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.Method = "PUT";
+                request.ContentLength = data.Length;
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
+                var response = (HttpWebResponse)request.GetResponse();
+            }
         }
 
         #endregion

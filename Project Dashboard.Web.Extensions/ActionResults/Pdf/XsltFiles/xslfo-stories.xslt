@@ -7,6 +7,12 @@
     extension-element-prefixes="exsl regexp">
   <xsl:import href="xslfo-common.xslt" />
 
+  <xsl:template match="p[@class='status']">
+    <fo:block font-size="{0.8 * $default-font-size}pt" font-style="italic" color="{$lowlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+      <xsl:apply-templates />
+    </fo:block>
+  </xsl:template>
+
   <xsl:template match="ul[@class = 'stories']/li/h3">
     <fo:block font-size="{1.3 * $default-font-size}pt" color="{$highlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm"
               border-bottom-width="1px" border-bottom-style="solid" border-bottom-color="{$highlight-colour}" padding-bottom="0.5mm">

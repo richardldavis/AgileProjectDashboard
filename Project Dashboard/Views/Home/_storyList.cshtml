@@ -1,7 +1,7 @@
 ﻿@model ProjectDashboard.Models.StoryListModel
 @using ProjectDashboard.Model.Stories
 @{
-    var allTags = (Model.Stories??new List<Story>()).SelectMany(i => i.Tags).Distinct().ToList();
+    var allTags = (Model.Stories ?? new List<Story>()).SelectMany(i => i.Tags).Distinct().ToList();
 }
 @if (allTags.Any())
 {
@@ -56,7 +56,7 @@ else
                             }
                         </ul>
                     }
-                    @if (story.Comments.Any())
+                    @if (Model.ViewOptions.IncludeComments && story.Comments.Any())
                     {
                         @RazorHelper.OpenTag("h" + (headerLevel + 1))
                         @:Comments

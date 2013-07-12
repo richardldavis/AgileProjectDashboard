@@ -10,6 +10,7 @@
         List<Story> GetStories();
         void SwapTag(string currentTag, string newTag);
         List<string> GetTags();
+        void ReplaceTextInDetails(string oldValue, string newValue);
     }
 
     public interface ICommentRepository

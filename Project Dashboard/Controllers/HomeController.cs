@@ -177,7 +177,7 @@
             return c;
         }
 
-        public ActionResult Stories(string layout)
+        public ActionResult Stories(string layout, ViewStoriesOptions viewOptions)
         {
             var stories = _service.GetStories();
             switch (layout)
@@ -186,9 +186,10 @@
                     return View("MinimalStories", new StoriesModel
                                                       {
                                                           Stories = stories,
+                                                          ViewOptions = viewOptions,
                                                       });
                 case "pdf":
-                    var html = NetHelper.RequestUrl(string.Format("{0}://{1}/{2}/{3}?layout=minimal", Request.Url.Scheme, Request.Url.Authority, ControllerContext.RouteData.Values["controller"], ControllerContext.RouteData.Values["action"]));
+                    var html = NetHelper.RequestUrl(string.Format("{0}://{1}/{2}/{3}?layout=minimal&{4}", Request.Url.Scheme, Request.Url.Authority, ControllerContext.RouteData.Values["controller"], ControllerContext.RouteData.Values["action"], GetQueryString(viewOptions)));
                     return new PdfResult
                                {
                                    HtmlContent = html,
@@ -198,19 +199,9 @@
                     return View(new StoriesModel
                                     {
                                         Stories = stories,
+                                        ViewOptions = viewOptions,
                                     });
             }
-        }
-
-        public PdfResult DownloadStories()
-        {
-            var html = System.IO.File.ReadAllText(Server.MapPath("~/privacy-policy.html"));
-
-            return new PdfResult
-                       {
-                           HtmlContent = html,
-                           FileName = "pdf.pdf",
-                       };
         }
 
         #endregion
@@ -244,6 +235,20 @@
             dashboardModel.LatestComments = _service.GetComments().OrderByDescending(x => x.Date).Take(5).ToList();
 
             return PartialView("_latestComments", dashboardModel);
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private static string GetQueryString(object model)
+        {
+            if (model == null)
+            {
+                return string.Empty;
+            }
+
+            return string.Join("&", model.GetType().GetProperties().Select(p => string.Format("{0}={1}", p.Name, p.GetValue(model) ?? string.Empty)));
         }
 
         #endregion

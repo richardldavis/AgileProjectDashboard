@@ -112,6 +112,11 @@
             _storyRepo.SwapTag(currentTag, newTag);
         }
 
+        public void ReplaceTextInDetails(string oldValue, string newValue)
+        {
+            _storyRepo.ReplaceTextInDetails(oldValue, newValue);
+        }
+
         public decimal CompletedStoryAverageEstimateAccuracy()
         {
             return GetStories().Where(x => x.Status == "Complete" && x.Estimate > 0).Average(y => ((y.Actual - y.Estimate) / y.Estimate) * 100);

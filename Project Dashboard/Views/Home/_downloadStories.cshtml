@@ -1,0 +1,13 @@
+﻿@model ProjectDashboard.Models.ViewStoriesOptions
+@using (Html.BeginForm(new { Layout = "pdf" }))
+{
+    <fieldset>
+        <div>
+            @Html.EditorFor(i => i.IncludeComments)
+            @Html.LabelFor(i => i.IncludeComments)
+        </div>
+    </fieldset>
+    <fieldset>
+        <button>Download PDF</button>
+    </fieldset>
+}

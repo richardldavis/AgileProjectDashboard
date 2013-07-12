@@ -20,6 +20,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">C:\Users\Neil Cumpstey\Desktop\ucomponents-8d54d4c51b0f\ucomponents_8d54d4c51b0f\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -174,6 +176,7 @@
     </Compile>
     <Compile Include="Helpers\MarkdownHelper.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\ViewStoriesOptions.cs" />
     <Compile Include="Models\StoryListModel.cs" />
     <Compile Include="Models\StoriesModel.cs" />
     <Compile Include="Models\DashboardModel.cs" />
@@ -299,6 +302,7 @@
     <Content Include="Views\Home\_storyList.cshtml" />
     <Content Include="Views\Home\MinimalStories.cshtml" />
     <Content Include="Views\Shared\_MinimalLayout.cshtml" />
+    <Content Include="Views\Home\_downloadStories.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

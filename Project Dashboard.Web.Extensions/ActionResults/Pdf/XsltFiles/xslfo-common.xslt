@@ -16,6 +16,7 @@
 
   <xsl:param name="root-url" />
   <xsl:param name="highlight-colour">#424297</xsl:param>
+  <xsl:param name="lowlight-colour">#8686ca</xsl:param>
   <xsl:param name="link-colour">#ee3d96</xsl:param>
   <xsl:param name="header-left">Zone</xsl:param>
   <xsl:param name="header-right">thisiszone.com</xsl:param>
@@ -237,11 +238,27 @@
       </fo:block>
     </fo:flow>
   </xsl:template>
+  
+  <xsl:template match="br">
+    <fo:block> </fo:block>
+  </xsl:template>
 
   <xsl:template match="cite">
     <fo:block font-size="10pt" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
       <xsl:apply-templates />
     </fo:block>
+  </xsl:template>
+  
+  <xsl:template match="code">
+    <fo:inline font-family="monospace">
+      <xsl:apply-templates />
+    </fo:inline>
+  </xsl:template>
+  
+  <xsl:template match="em|i">
+    <fo:inline font-style="italic">
+      <xsl:apply-templates />
+    </fo:inline>
   </xsl:template>
 
   <xsl:template match="h1">
@@ -423,9 +440,9 @@
     </fo:block>
   </xsl:template>
 
-  <xsl:template match="strong">
+  <xsl:template match="strong|b">
     <fo:inline font-weight="bold">
-      <xsl:apply-templates select="*|text()"/>
+      <xsl:apply-templates />
     </fo:inline>
   </xsl:template>
 

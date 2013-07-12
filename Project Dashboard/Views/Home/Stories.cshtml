@@ -15,14 +15,16 @@
         </div>
     </section>
 }
-<h3>Stories</h3>
 @if (Model.Stories == null || !Model.Stories.Any())
 {
+    <h3>Stories</h3>
     <p>The project has no stories.</p>
 }
 else
 {
-    <p>@Html.ActionLink("Download as PDF", "Stories", new { Layout = "pdf" })</p>
+    <h3>Download stories</h3>
+    @Html.Partial("_downloadStories", Model.DownloadOptions)
+    <h3>All stories</h3>
     @Html.Partial("_storyList", new ProjectDashboard.Models.StoryListModel
                                     {
                                         RootHeaderLevel = 4,
