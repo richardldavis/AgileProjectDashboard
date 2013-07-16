@@ -36,7 +36,13 @@ else
                     {
                         <p class="tags">@string.Join("; ", story.Tags)</p>
                     }
-                    <p class="status">@story.Status</p>
+                    <p class="attributes">
+                        <span class="id">#@story.Id</span>
+                        @if (Model.ViewOptions.IncludeStatus)
+                        {
+                            <span class="status">@story.Status</span>
+                        }
+                    </p>
                     <div class="description">@Html.Markdown(story.Details).RenumberHeadings(headerLevel + 1)</div>
                     @if (story.Tasks.Any())
                     {

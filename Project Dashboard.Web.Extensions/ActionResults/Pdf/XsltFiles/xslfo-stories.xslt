@@ -7,8 +7,14 @@
     extension-element-prefixes="exsl regexp">
   <xsl:import href="xslfo-common.xslt" />
 
-  <xsl:template match="p[@class='status']">
-    <fo:block font-size="{0.8 * $default-font-size}pt" font-style="italic" color="{$lowlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
+  <xsl:template match="span[@class='status']">
+    <fo:inline font-style="italic">
+      <xsl:apply-templates />
+    </fo:inline>
+  </xsl:template>
+
+  <xsl:template match="p[@class='attributes']">
+    <fo:block font-size="{0.8 * $default-font-size}pt" color="{$lowlight-colour}" space-before="{$default-vertical-spacing-mm}mm" space-after="{$default-vertical-spacing-mm}mm">
       <xsl:apply-templates />
     </fo:block>
   </xsl:template>
