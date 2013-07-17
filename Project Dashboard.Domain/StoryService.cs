@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Model.Projects;
     using Model.Stories;
     using TimeZoneIntegration;
 
     public class StoryService
     {
+        private readonly IProjectRepository _projectRepo;
         private readonly IStoryRepository _storyRepo;
         private readonly IStoryAnnotationRepository _actualRepo;
         private readonly ICommentRepository _commentRepo;
@@ -17,15 +19,21 @@
 
         private decimal _budget = (decimal)138.5;
 
-        public StoryService(int projectID, string apiKey, string fileRoot)
+        public StoryService(int projectId, string apiKey, string fileRoot)
         {
-            _storyRepo = new AgileZenStoryRepository(projectID, apiKey);
-            _actualRepo = new StoryAnnotationRepository(projectID, fileRoot);
-            _commentRepo = new AgileZenCommentRepository(projectID, apiKey);
+            _projectRepo = new AgileZenProjectRepository(projectId, apiKey);
+            _storyRepo = new AgileZenStoryRepository(projectId, apiKey);
+            _actualRepo = new StoryAnnotationRepository(projectId, fileRoot);
+            _commentRepo = new AgileZenCommentRepository(projectId, apiKey);
             _cache = new StoryCache();
             _snapshotRepo = new SnapshotRepository(fileRoot);
             _timezone = new TimeZoneService();
 
+        }
+
+        public Project GetProject()
+        {
+            return _projectRepo.GetProject();
         }
 
         public List<string> GetPrioritiesForProject()

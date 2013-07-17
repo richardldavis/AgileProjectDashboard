@@ -1,9 +1,13 @@
 ﻿namespace ProjectDashboard.Domain
 {
-    using ProjectDashboard.Domain.TimeZoneIntegration;
-    using System;
     using System.Collections.Generic;
+    using Model.Projects;
     using Model.Stories;
+
+    public interface IProjectRepository
+    {
+        Project GetProject();
+    }
 
     public interface IStoryRepository
     {

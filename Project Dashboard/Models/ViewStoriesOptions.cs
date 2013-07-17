@@ -9,6 +9,7 @@ namespace ProjectDashboard.Models
         {
             IncludeComments = true;
             IncludeStatus = true;
+            IncludeTasks = true;
         }
 
         #endregion
@@ -20,6 +21,9 @@ namespace ProjectDashboard.Models
 
         [Display(Name = "Include status")]
         public bool IncludeStatus { get; set; }
+
+        [Display(Name = "Include tasks")]
+        public bool IncludeTasks { get; set; }
 
         #endregion
     }

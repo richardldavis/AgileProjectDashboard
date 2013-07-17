@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Model.Stories;
+using ProjectDashboard.Model.Projects;
 
     public class StoriesModel
     {
@@ -16,6 +17,8 @@
         #endregion
 
         #region Properties
+
+        public Project Project { get; set; }
 
         public IList<Story> Stories { get; set; }
 

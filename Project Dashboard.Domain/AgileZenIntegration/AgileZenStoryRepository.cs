@@ -154,24 +154,11 @@
 
         #region Helpers
 
-        private static XmlNodeList GetAgileResponseAsXml(string url)
-        {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            var myResponse = request.GetResponse();
-
-            var stream = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
-
-            var doc = new XmlDocument();
-            doc.LoadXml(stream.ReadToEnd());
-            return doc.GetElementsByTagName("story");
-        }
-
         private XmlNodeList GetStoriesAsXml()
         {
             var url = string.Format("{0}projects/{1}/stories.xml?apikey={2}", ApiRootUrl, ProjectId, ApiKey)
                       + "&with=everything&pageSize=1000";
-            return GetAgileResponseAsXml(url);
+            return GetAgileResponseAsXml(url).GetElementsByTagName("story");
         }
 
         #endregion

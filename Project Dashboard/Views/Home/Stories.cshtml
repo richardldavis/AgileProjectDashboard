@@ -1,6 +1,6 @@
 ﻿@model ProjectDashboard.Models.StoriesModel
 @{
-    ViewBag.Title = "Stories";
+    ViewBag.Title = string.Format("{0} stories", Model.Project.Name);
 }
 @section featured {
     <section class="featured">

@@ -7,6 +7,10 @@
             @Html.LabelFor(i => i.IncludeStatus, new { @class = "checkbox" })
         </div>
         <div>
+            @Html.EditorFor(i => i.IncludeTasks)
+            @Html.LabelFor(i => i.IncludeTasks, new { @class = "checkbox" })
+        </div>
+        <div>
             @Html.EditorFor(i => i.IncludeComments)
             @Html.LabelFor(i => i.IncludeComments, new { @class = "checkbox" })
         </div>

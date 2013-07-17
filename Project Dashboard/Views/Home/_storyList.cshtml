@@ -44,7 +44,7 @@ else
                         }
                     </p>
                     <div class="description">@Html.Markdown(story.Details).RenumberHeadings(headerLevel + 1)</div>
-                    @if (story.Tasks.Any())
+                    @if (Model.ViewOptions.IncludeTasks && story.Tasks.Any())
                     {
                         @RazorHelper.OpenTag("h" + (headerLevel + 1))
                         @:Tasks

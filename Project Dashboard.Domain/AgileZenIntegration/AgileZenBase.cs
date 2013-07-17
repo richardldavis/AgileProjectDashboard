@@ -1,7 +1,9 @@
 ﻿namespace ProjectDashboard.Domain
 {
+    using System.IO;
     using System.Net;
     using System.Text;
+    using System.Xml;
 
     public class AgileZenBase
     {
@@ -31,7 +33,7 @@
 
         #region Methods
 
-        protected HttpWebResponse Post(string requestString, string postData)
+        protected static HttpWebResponse Post(string requestString, string postData)
         {
             var addRequest = (HttpWebRequest)WebRequest.Create(requestString);
             addRequest.ContentType = "application/x-www-form-urlencoded";
@@ -48,6 +50,19 @@
             }
 
             return (HttpWebResponse)addRequest.GetResponse();
+        }
+
+        protected static XmlDocument GetAgileResponseAsXml(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            var myResponse = request.GetResponse();
+
+            var stream = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
+
+            var doc = new XmlDocument();
+            doc.LoadXml(stream.ReadToEnd());
+            return doc;
         }
 
         #endregion

@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgileZenIntegration\AgileZenProjectRepository.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="TextfileRepositories\ActualRepository.cs" />
     <Compile Include="AgileZenIntegration\AgileZenBase.cs" />

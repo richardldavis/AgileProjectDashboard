@@ -179,12 +179,14 @@
 
         public ActionResult Stories(string layout, ViewStoriesOptions viewOptions)
         {
+            var project = _service.GetProject();
             var stories = _service.GetStories();
             switch (layout)
             {
                 case "minimal":
                     return View("MinimalStories", new StoriesModel
                                                       {
+                                                          Project = project,
                                                           Stories = stories,
                                                           ViewOptions = viewOptions,
                                                       });
@@ -198,6 +200,7 @@
                 default:
                     return View(new StoriesModel
                                     {
+                                        Project = project,
                                         Stories = stories,
                                         ViewOptions = viewOptions,
                                     });

@@ -1,7 +1,7 @@
 ﻿@model ProjectDashboard.Models.StoriesModel
 @{
     Layout = "../Shared/_MinimalLayout.cshtml";
-    ViewBag.Title = "Stories";
+    ViewBag.Title = string.Format("{0} stories", Model.Project.Name);
 }
 @if (Model.Stories == null || !Model.Stories.Any())
 {
